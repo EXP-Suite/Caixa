@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Caixa Dinheiro — Explosão Alimentos</title>
-<meta name="description" content="Controle de caixa em dinheiro — Explosão Alimentos">
+<title>Caixa — Explosão Alimentos</title>
+<meta name="description" content="Controle de caixa — Explosão Alimentos">
 <meta property="og:type"    content="website">
-<meta property="og:title"   content="Caixa Dinheiro — Explosão Alimentos">
+<meta property="og:title"   content="Caixa — Explosão Alimentos">
 <meta property="og:locale"  content="pt_BR">
 <link rel="icon" type="image/png" href="https://explosaoalimentos.com.br/wp-content/uploads/2024/11/logo-menor-e1731554322568.png">
 
@@ -64,47 +64,49 @@
   }
 
   /* ── MAIN ── */
-  .main { max-width: 1100px; margin: 0 auto; padding: 24px 20px 60px; }
+  .main { max-width: 1180px; margin: 0 auto; padding: 14px 18px 50px; }
 
   /* ── KPIs ── */
   .kpis {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 14px;
-    margin-bottom: 28px;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 8px;
+    margin-bottom: 12px;
   }
   .kpi {
     background: var(--card);
     border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px;
+    border-radius: 10px;
+    padding: 9px 11px;
+    min-height: 82px;
     transition: box-shadow .18s;
+    position: relative;
   }
-  .kpi:hover { box-shadow: 0 4px 20px var(--shadow); }
+  .kpi:hover { box-shadow: 0 3px 14px var(--shadow); }
   .kpi-icon {
-    width: 38px; height: 38px; border-radius: 9px;
+    width: 24px; height: 24px; border-radius: 7px;
     display: flex; align-items: center; justify-content: center;
-    font-size: 20px; margin-bottom: 12px;
+    font-size: 14px; margin-bottom: 6px;
   }
   .kpi-icon.green  { background: var(--green-lt); }
   .kpi-icon.blue   { background: var(--blue-lt);  }
   .kpi-icon.red    { background: var(--red-lt);   }
   .kpi-icon.orange { background: var(--orange-lt);}
   .kpi-icon.purple { background: var(--purple-lt);} 
-  .kpi-label { font-size: 11px; font-weight: 600; color: var(--txt-m); text-transform: uppercase; letter-spacing: .6px; }
-  .kpi-val   { font-size: 26px; font-weight: 700; color: var(--txt-h); margin-top: 4px; line-height: 1; }
+  .kpi-label { font-size: 9px; font-weight: 700; color: var(--txt-m); text-transform: uppercase; letter-spacing: .35px; line-height: 1.15; }
+  .kpi-val   { font-size: 17px; font-weight: 800; color: var(--txt-h); margin-top: 2px; line-height: 1.05; }
   .kpi-val.red  { color: #c0392b; }
   .kpi-val.green{ color: var(--green); }
-  .kpi-sub   { font-size: 11px; color: var(--txt-s); margin-top: 4px; }
+  .kpi-sub   { font-size: 9px; color: var(--txt-s); margin-top: 2px; line-height: 1.1; }
 
   /* ── DATE FILTER BAR ── */
   .filter-bar {
     background: var(--card);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 14px 20px;
-    display: flex; align-items: center; gap: 14px;
-    margin-bottom: 20px; flex-wrap: wrap;
+    padding: 9px 12px;
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 12px; flex-wrap: wrap;
   }
   .filter-bar label { font-size: 12px; font-weight: 600; color: var(--txt-m); }
   .filter-bar input[type=date] {
@@ -124,9 +126,9 @@
   .spacer { flex: 1; }
 
   /* ── TABS ── */
-  .tabs { display: flex; gap: 4px; margin-bottom: 20px; }
+  .tabs { display: flex; gap: 4px; margin-bottom: 12px; }
   .tab {
-    padding: 9px 20px; border-radius: 9px; font-size: 13px; font-weight: 600;
+    padding: 7px 14px; border-radius: 8px; font-size: 12px; font-weight: 600;
     cursor: pointer; border: 1px solid transparent; transition: all .16s;
     color: var(--txt-m); background: transparent; display: flex; align-items: center; gap: 7px;
   }
@@ -143,16 +145,16 @@
   /* ── FORM CARD ── */
   .form-card {
     background: var(--card); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 24px; margin-bottom: 20px;
+    border-radius: var(--radius); padding: 18px; margin-bottom: 16px;
   }
   .form-card h3 {
     font-size: 14px; font-weight: 700; color: var(--green);
-    margin-bottom: 18px; display: flex; align-items: center; gap: 8px;
+    margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
   }
   .form-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 14px;
+    gap: 10px;
   }
   .field { display: flex; flex-direction: column; gap: 5px; }
   .field.wide { grid-column: span 2; }
@@ -252,6 +254,7 @@
   @keyframes spin { to { transform: rotate(360deg); } }
 
   /* ── FOOTER ── */
+  /* Versão visual compacta dos cards: Rev 1.9 */
   #version {
     position: fixed; bottom: 10px; right: 14px;
     font-size: 10px; color: var(--txt-s);
@@ -260,9 +263,15 @@
     box-shadow: 0 1px 4px rgba(0,0,0,.08);
   }
 
+  @media (max-width: 900px) {
+    .kpis { grid-template-columns: repeat(auto-fit, minmax(115px, 1fr)); }
+    .kpi-val { font-size: 15px; }
+    .kpi { padding: 8px 9px; min-height: 76px; }
+  }
+
   @media (max-width: 600px) {
     .header { padding: 12px 16px; }
-    .main   { padding: 16px 14px 60px; }
+    .main   { padding: 12px 12px 50px; }
     .field.wide { grid-column: span 1; }
   }
 </style>
@@ -551,7 +560,7 @@
 
 </div><!-- /main -->
 
-<div id="version">Rev 1.5 — pagamentos ampliados</div>
+<div id="version">Rev 1.8 — cliente corrigido</div>
 
 <script>
 // ────────────────────────────────────────────────────────────
@@ -624,20 +633,25 @@ function renderVendas(lista) {
     return;
   }
 
-  // Ordena decrescente pelo número
+  // Ordena decrescente pelo número da venda
   const ordenado = [...lista].sort((a, b) =>
-    Number(b['Numero da venda'] || b['numero'] || 0) -
-    Number(a['Numero da venda'] || a['numero'] || 0)
+    numero(getCampo(vazioSeInvalido(b), ['Numero da venda', 'Número da venda', 'numero'])) -
+    numero(getCampo(vazioSeInvalido(a), ['Numero da venda', 'Número da venda', 'numero']))
   );
 
   tb.innerHTML = ordenado.map(v => {
-    const num    = v['Numero da venda'] || v['numero'] || '—';
-    const data   = formatarDataBR(normalizarData(v['Data'] || v['data']));
-    const total  = fmtMoeda(v['Total da venda'] || v['total'] || 0);
-    const pag    = v['Pagamento detalhado'] || v['pagamentoDetalhado'] || v['pagamento_detalhado'] || montarPagamentoTabela(v);
-    const cli    = v['Nome do cliente'] || v['cliente'] || '—';
-    const obs    = v['Observação'] || v['observacao'] || '—';
-    const not    = (v['Notinha'] || v['notinha'] || '').toString().toLowerCase();
+    const num    = getCampo(v, ['Numero da venda', 'Número da venda', 'numero']) || '—';
+    const data   = formatarDataBR(normalizarData(getCampo(v, ['Data', 'data'])));
+    const total  = fmtMoeda(getCampo(v, ['Total da venda', 'total']) || 0);
+
+    // Usa o cabeçalho novo exatamente:
+    // Forma de pagamento | Pagamento detalhado | Nome do cliente | Observação | Notinha
+    const pagDetalhado = limparTextoPagamento(getCampo(v, ['Pagamento detalhado', 'pagamentoDetalhado', 'pagamento_detalhado']));
+    const pag    = pagDetalhado || montarPagamentoTabela(v);
+    const cli    = obterClienteVenda(v) || '—';
+    const obs    = limparTextoTabela(getCampo(v, ['Observação', 'Observacao', 'observacao', 'observação'])) || '—';
+    const notVal = limparTextoTabela(getCampo(v, ['Notinha', 'notinha']));
+    const not    = notVal.toString().toLowerCase();
     const tagNot = (not === 'sim' || not === 'true')
       ? '<span class="tag-sim">Sim</span>'
       : '<span class="tag-nao">Não</span>';
@@ -646,12 +660,54 @@ function renderVendas(lista) {
       <td>${num}</td>
       <td>${data}</td>
       <td>${total}</td>
-      <td style="max-width:210px;white-space:normal;font-size:12px;color:var(--txt-m)">${pag}</td>
+      <td style="max-width:230px;white-space:normal;font-size:12px;color:var(--txt-m)">${pag}</td>
       <td>${cli}</td>
-      <td style="max-width:200px;white-space:normal;font-size:12px;color:var(--txt-m)">${obs}</td>
+      <td style="max-width:220px;white-space:normal;font-size:12px;color:var(--txt-m)">${obs}</td>
       <td>${tagNot}</td>
     </tr>`;
   }).join('');
+}
+
+function vazioSeInvalido(obj) { return obj || {}; }
+
+function limparTextoTabela(valor) {
+  const s = (valor === null || valor === undefined) ? '' : String(valor).trim();
+  return (s === '' || s === '-') ? '' : s;
+}
+
+function limparTextoPagamento(valor) {
+  const s = limparTextoTabela(valor);
+  if (!s) return '';
+
+  // Evita exibir Notinha/valores desalinhados como pagamento em linhas gravadas com script antigo.
+  const normal = normalizarChave(s);
+  const invalidos = ['sim', 'nao', 'true', 'false'];
+  if (invalidos.includes(normal)) return '';
+
+  return s;
+}
+
+function obterClienteVenda(v) {
+  // Cabeçalho novo correto: Nome do cliente.
+  let cliente = limparTextoTabela(getCampo(v, [
+    'Nome do cliente',
+    'Nome do Cliente',
+    'Cliente',
+    'cliente',
+    'nomeCliente',
+    'nome_cliente'
+  ]));
+  if (cliente) return cliente;
+
+  // Compatibilidade com linhas antigas gravadas antes da expansão do cabeçalho.
+  // Antes, o cliente ficava na 4ª coluna. Com o novo cabeçalho, essa posição virou "Dinheiro".
+  // Se a coluna Dinheiro contiver texto em vez de número, trata como cliente antigo.
+  const possivelClienteAntigo = limparTextoTabela(getCampo(v, ['Dinheiro', 'dinheiro']));
+  if (possivelClienteAntigo && isNaN(numero(possivelClienteAntigo))) {
+    return possivelClienteAntigo;
+  }
+
+  return '';
 }
 
 function renderSangrias(lista) {
@@ -674,7 +730,7 @@ function renderSangrias(lista) {
 
   tb.innerHTML = ordenado.map(s => {
     const data   = formatarDataBR(normalizarData(s['Data'] || s['data']));
-    const hora   = s['Hora'] || s['hora'] || '—';
+    const hora   = formatarHora(s['Hora'] || s['hora'] || '');
     const valor  = fmtMoeda(s['Valor retirado'] || s['valor'] || 0);
     const motivo = s['Motivo da sangria'] || s['motivo'] || '—';
     const resp   = s['Responsável'] || s['responsavel'] || '—';
@@ -689,6 +745,32 @@ function renderSangrias(lista) {
   }).join('');
 }
 
+
+function normalizarChave(txt) {
+  return String(txt || '')
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, '');
+}
+
+function getCampo(obj, nomes) {
+  for (const nome of nomes) {
+    if (obj[nome] !== undefined && obj[nome] !== null && obj[nome] !== '') return obj[nome];
+  }
+
+  const mapa = {};
+  Object.keys(obj || {}).forEach(chave => {
+    mapa[normalizarChave(chave)] = obj[chave];
+  });
+
+  for (const nome of nomes) {
+    const valor = mapa[normalizarChave(nome)];
+    if (valor !== undefined && valor !== null && valor !== '') return valor;
+  }
+
+  return '';
+}
+
 function montarPagamentoTabela(v) {
   const partes = [];
   const dinheiro = valorPagamento(v, 'dinheiro');
@@ -698,6 +780,7 @@ function montarPagamentoTabela(v) {
   const boleto = valorPagamento(v, 'boleto');
   const carteira = valorPagamento(v, 'carteira');
   const cheque = valorPagamento(v, 'cheque');
+
   if (dinheiro > 0) partes.push(fmtMoeda(dinheiro) + ' dinheiro');
   if (pix > 0) partes.push(fmtMoeda(pix) + ' PIX');
   if (credito > 0) partes.push(fmtMoeda(credito) + ' crédito');
@@ -705,7 +788,10 @@ function montarPagamentoTabela(v) {
   if (boleto > 0) partes.push(fmtMoeda(boleto) + ' boleto');
   if (carteira > 0) partes.push(fmtMoeda(carteira) + ' carteira');
   if (cheque > 0) partes.push(fmtMoeda(cheque) + ' cheque');
-  return partes.length ? partes.join(' + ') : (v['Forma de pagamento'] || v['formaPagamento'] || '—');
+  if (partes.length) return partes.join(' + ');
+
+  const forma = limparTextoPagamento(getCampo(v, ['Forma de pagamento', 'formaPagamento']));
+  return forma || '—';
 }
 
 function atualizarKPIs(vendas, sangrias) {
@@ -761,18 +847,8 @@ function valorPagamento(v, tipo) {
   };
 
   const possiveis = mapa[tipo] || [];
-  for (const nome of possiveis) {
-    if (v[nome] !== undefined && v[nome] !== '') return numero(v[nome]);
-  }
-
-  // Compatibilidade com registros antigos: se não houver colunas novas, assume dinheiro.
-  const temColunasNovas = ['Dinheiro','PIX','Cartão de crédito','Cartão de débito','Boleto','Carteira','Cheque','valorDinheiro','valorPix','valorCredito','valorDebito','valorBoleto','valorCarteira','valorCheque']
-    .some(c => v[c] !== undefined && v[c] !== '');
-  if (!temColunasNovas && tipo === 'dinheiro') {
-    return numero(v['Total da venda'] || v['total'] || 0);
-  }
-
-  return 0;
+  const valor = getCampo(v, possiveis);
+  return numero(valor);
 }
 
 // ────────────────────────────────────────────────────────────
@@ -808,6 +884,7 @@ async function salvarVenda() {
         data: formatarDataPlanilha(data),
         total: total,
         cliente: cli || '—',
+        nomeCliente: cli || '—',
         observacao: obs,
         notinha: not,
         formaPagamento: pagamento.formaPagamento,
@@ -1081,6 +1158,49 @@ function hojeStr() {
 
 function horaAtual() {
   return new Date().toTimeString().slice(0, 5);   // HH:MM
+}
+
+
+function formatarHora(val) {
+  if (val === null || val === undefined || val === '') return '—';
+
+  const s = String(val).trim();
+
+  // Se já vier como HH:MM ou HH:MM:SS, mantém exatamente o horário informado.
+  const horaDireta = s.match(/^(\d{1,2}):(\d{2})(?::\d{2})?$/);
+  if (horaDireta) {
+    return `${horaDireta[1].padStart(2, '0')}:${horaDireta[2]}`;
+  }
+
+  // Quando o Google Sheets devolve horário puro como data antiga, exemplo:
+  // 1899-12-30T18:06:28.000Z.
+  // Esse horário vem deslocado por causa do fuso histórico de São Paulo em 1899.
+  // Para exibir o mesmo horário lançado na planilha, subtraímos 3h06.
+  if (/^1899-12-30T/.test(s)) {
+    const m = s.match(/T(\d{2}):(\d{2})/);
+    if (m) {
+      let totalMin = (parseInt(m[1], 10) * 60) + parseInt(m[2], 10) - 186;
+      totalMin = ((totalMin % 1440) + 1440) % 1440;
+      const h = Math.floor(totalMin / 60);
+      const min = totalMin % 60;
+      return `${String(h).padStart(2, '0')}:${String(min).padStart(2, '0')}`;
+    }
+  }
+
+  // Outros ISO com data real: usa horário local do navegador.
+  if (/^\d{4}-\d{2}-\d{2}T/.test(s)) {
+    const dt = new Date(s);
+    if (!isNaN(dt)) {
+      return `${String(dt.getHours()).padStart(2, '0')}:${String(dt.getMinutes()).padStart(2, '0')}`;
+    }
+  }
+
+  const dt = new Date(s);
+  if (!isNaN(dt)) {
+    return `${String(dt.getHours()).padStart(2, '0')}:${String(dt.getMinutes()).padStart(2, '0')}`;
+  }
+
+  return s;
 }
 
 function formatarDataPlanilha(yyyy_mm_dd) {
