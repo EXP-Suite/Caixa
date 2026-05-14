@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Caixa — Explosão Alimentos</title>
-<meta name="description" content="Controle de caixa — Explosão Alimentos">
+<title>Caixa Dinheiro — Explosão Alimentos</title>
+<meta name="description" content="Controle de caixa em dinheiro — Explosão Alimentos">
 <meta property="og:type"    content="website">
-<meta property="og:title"   content="Caixa — Explosão Alimentos">
+<meta property="og:title"   content="Caixa Dinheiro — Explosão Alimentos">
 <meta property="og:locale"  content="pt_BR">
 <link rel="icon" type="image/png" href="https://explosaoalimentos.com.br/wp-content/uploads/2024/11/logo-menor-e1731554322568.png">
 
@@ -187,6 +187,32 @@
   }
   .check-row span { font-size: 13px; color: var(--txt-h); }
 
+  /* Botões de vendedor */
+  .seller-options {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .seller-btn {
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--txt-h);
+    border-radius: 8px;
+    padding: 9px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .15s;
+    font-family: inherit;
+  }
+  .seller-btn:hover { border-color: var(--green); color: var(--green); }
+  .seller-btn.active {
+    background: var(--green);
+    border-color: var(--green);
+    color: #fff;
+  }
+
+
   /* Pagamento misto */
   .payment-split {
     display: none;
@@ -221,6 +247,25 @@
   }
   .table-header h3 { font-size: 14px; font-weight: 700; color: var(--txt-h); }
   .table-count { font-size: 12px; color: var(--txt-s); }
+  .table-header { flex-wrap: wrap; gap: 12px; }
+  .table-tools {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: flex-end;
+  }
+  .table-filter {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 12px; color: var(--txt-m); font-weight: 600;
+  }
+  .table-filter select {
+    border: 1px solid var(--border); border-radius: 8px;
+    padding: 6px 9px; font-size: 12px; color: var(--txt-h);
+    background: var(--bg); outline: none; font-family: inherit;
+  }
+  .table-filter select:focus { border-color: var(--green); background: #fff; }
+  .table-total {
+    font-size: 12px; font-weight: 700; color: var(--green);
+    background: var(--green-lt); border-radius: 8px; padding: 6px 10px;
+    white-space: nowrap;
+  }
   .table-wrap  { overflow-x: auto; }
   table { width: 100%; border-collapse: collapse; }
   thead th {
@@ -282,7 +327,7 @@
 <div class="header">
   <img src="https://explosaoalimentos.com.br/wp-content/uploads/2024/11/logo-menor-e1731554322568.png" alt="Explosão Alimentos">
   <div class="header-info">
-    <div class="header-title">Caixa</div>
+    <div class="header-title">Caixa Dinheiro</div>
     <div class="header-sub">Controle de vendas e sangrias em dinheiro</div>
   </div>
   <div class="header-date">📅 <span id="dataHoje">—</span></div>
@@ -412,6 +457,16 @@
             <option value="misto">Parte de uma forma e parte de outra</option>
           </select>
         </div>
+        <div class="field">
+          <label>Vendedor</label>
+          <input type="hidden" id="v-vendedor" value="">
+          <div class="seller-options" id="vendedor-opcoes">
+            <button type="button" class="seller-btn" onclick="selecionarVendedor('Maria Eduarda', this)">Maria Eduarda</button>
+            <button type="button" class="seller-btn" onclick="selecionarVendedor('Maria Júlia', this)">Maria Júlia</button>
+            <button type="button" class="seller-btn" onclick="selecionarVendedor('Lara', this)">Lara</button>
+            <button type="button" class="seller-btn" onclick="selecionarVendedor('Outro', this)">Outro</button>
+          </div>
+        </div>
         <div class="payment-split" id="pagamento-misto-box">
           <div class="payment-split-title">💳 Detalhar pagamento misto</div>
           <div class="payment-grid">
@@ -476,7 +531,20 @@
     <div class="table-card">
       <div class="table-header">
         <h3>📋 Vendas Registradas</h3>
-        <span class="table-count" id="count-vendas">—</span>
+        <div class="table-tools">
+          <label class="table-filter">
+            Vendedor:
+            <select id="filtroVendedor" onchange="alterarFiltroVendedor(this.value)">
+              <option value="">Todos</option>
+              <option value="Maria Eduarda">Maria Eduarda</option>
+              <option value="Maria Júlia">Maria Júlia</option>
+              <option value="Lara">Lara</option>
+              <option value="Outro">Outro</option>
+            </select>
+          </label>
+          <span class="table-total" id="total-vendas-filtradas">Total: —</span>
+          <span class="table-count" id="count-vendas">—</span>
+        </div>
       </div>
       <div class="table-wrap">
         <table>
@@ -487,12 +555,13 @@
               <th>Total</th>
               <th>Pagamento</th>
               <th>Cliente</th>
+              <th>Vendedor</th>
               <th>Observação</th>
               <th>Notinha</th>
             </tr>
           </thead>
           <tbody id="tb-vendas">
-            <tr><td colspan="7"><div class="empty"><div class="ico">📭</div>Carregando dados…</div></td></tr>
+            <tr><td colspan="8"><div class="empty"><div class="ico">📭</div>Carregando dados…</div></td></tr>
           </tbody>
         </table>
       </div>
@@ -560,7 +629,7 @@
 
 </div><!-- /main -->
 
-<div id="version">Rev 1.8 — cliente corrigido</div>
+<div id="version">Rev 2.3 — filtro vendedor</div>
 
 <script>
 // ────────────────────────────────────────────────────────────
@@ -572,6 +641,7 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbztWZAYjUHWjhHO_ZchH
 let todosVendas   = [];
 let todosSangrias = [];
 let filtroAtual   = null;   // null = todos; 'YYYY-MM-DD' = filtra
+let filtroVendedor = '';     // '' = todos; nome = filtra vendedor
 
 // ────────────────────────────────────────────────────────────
 //  INIT
@@ -601,7 +671,7 @@ async function carregarDados() {
     renderizar();
   } catch (e) {
     console.error(e);
-    mostrarVazio('tb-vendas',   7, '❌ Erro ao carregar dados. Verifique a conexão.');
+    mostrarVazio('tb-vendas',   8, '❌ Erro ao carregar dados. Verifique a conexão.');
     mostrarVazio('tb-sangrias', 5, '❌ Erro ao carregar dados. Verifique a conexão.');
   }
 }
@@ -610,17 +680,24 @@ async function carregarDados() {
 //  RENDERIZAR TABELAS + KPIs
 // ────────────────────────────────────────────────────────────
 function renderizar() {
-  const vFiltr = filtroAtual
-    ? todosVendas.filter(v => normalizarData(v['Data'] || v['data']) === filtroAtual)
+  const vendasPorData = filtroAtual
+    ? todosVendas.filter(v => normalizarData(getCampo(v, ['Data', 'data'])) === filtroAtual)
     : todosVendas;
 
+  const vFiltr = filtroVendedor
+    ? vendasPorData.filter(v => normalizarVendedor(obterVendedorVenda(v)) === normalizarVendedor(filtroVendedor))
+    : vendasPorData;
+
   const sFiltr = filtroAtual
-    ? todosSangrias.filter(s => normalizarData(s['Data'] || s['data']) === filtroAtual)
+    ? todosSangrias.filter(s => normalizarData(getCampo(s, ['Data', 'data'])) === filtroAtual)
     : todosSangrias;
 
   renderVendas(vFiltr);
   renderSangrias(sFiltr);
-  atualizarKPIs(vFiltr, sFiltr);
+
+  // Os cards superiores seguem o período selecionado.
+  // O filtro por vendedor afeta a tabela e o totalizador de Vendas Registradas.
+  atualizarKPIs(vendasPorData, sFiltr);
 }
 
 function renderVendas(lista) {
@@ -628,8 +705,10 @@ function renderVendas(lista) {
   document.getElementById('count-vendas').textContent =
     lista.length + (lista.length === 1 ? ' venda' : ' vendas');
 
+  atualizarTotalizadorVendasRegistradas(lista);
+
   if (!lista.length) {
-    mostrarVazio('tb-vendas', 7, '📭 Nenhuma venda encontrada para o período.');
+    mostrarVazio('tb-vendas', 8, '📭 Nenhuma venda encontrada para o período.');
     return;
   }
 
@@ -649,6 +728,7 @@ function renderVendas(lista) {
     const pagDetalhado = limparTextoPagamento(getCampo(v, ['Pagamento detalhado', 'pagamentoDetalhado', 'pagamento_detalhado']));
     const pag    = pagDetalhado || montarPagamentoTabela(v);
     const cli    = obterClienteVenda(v) || '—';
+    const vendedor = obterVendedorVenda(v) || '—';
     const obs    = limparTextoTabela(getCampo(v, ['Observação', 'Observacao', 'observacao', 'observação'])) || '—';
     const notVal = limparTextoTabela(getCampo(v, ['Notinha', 'notinha']));
     const not    = notVal.toString().toLowerCase();
@@ -662,6 +742,7 @@ function renderVendas(lista) {
       <td>${total}</td>
       <td style="max-width:230px;white-space:normal;font-size:12px;color:var(--txt-m)">${pag}</td>
       <td>${cli}</td>
+      <td>${vendedor}</td>
       <td style="max-width:220px;white-space:normal;font-size:12px;color:var(--txt-m)">${obs}</td>
       <td>${tagNot}</td>
     </tr>`;
@@ -708,6 +789,36 @@ function obterClienteVenda(v) {
   }
 
   return '';
+}
+
+function obterVendedorVenda(v) {
+  return limparTextoTabela(getCampo(v, [
+    'Vendedor',
+    'vendedor',
+    'Nome do vendedor',
+    'nomeVendedor',
+    'nome_vendedor'
+  ]));
+}
+
+function normalizarVendedor(nome) {
+  return String(nome || '')
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim();
+}
+
+function atualizarTotalizadorVendasRegistradas(lista) {
+  const total = lista.reduce((soma, v) => soma + numero(getCampo(v, ['Total da venda', 'Total Venda', 'total', 'totalVenda']) || 0), 0);
+  const dataTxt = filtroAtual ? formatarDataBR(filtroAtual) : 'todos os dias';
+  const vendedorTxt = filtroVendedor ? ' • ' + filtroVendedor : ' • todos os vendedores';
+  const el = document.getElementById('total-vendas-filtradas');
+  if (el) el.textContent = `Total: ${fmtMoeda(total)} • ${dataTxt}${vendedorTxt}`;
+}
+
+function alterarFiltroVendedor(valor) {
+  filtroVendedor = valor || '';
+  renderizar();
 }
 
 function renderSangrias(lista) {
@@ -859,12 +970,18 @@ async function salvarVenda() {
   const data  = document.getElementById('v-data').value;
   const total = parseValorBR(document.getElementById('v-total').value);
   const cli   = document.getElementById('v-cliente').value.trim();
+  const vendedor = document.getElementById('v-vendedor').value.trim();
   const obs   = document.getElementById('v-obs').value.trim();
   const not   = document.getElementById('v-notinha').checked ? 'Sim' : 'Não';
   const pagamento = obterPagamentoVenda(total);
 
   if (!numero || !data || !total) {
     setMsg('msg-venda', 'Preencha nº da venda, data e total.', 'err');
+    return;
+  }
+
+  if (!vendedor) {
+    setMsg('msg-venda', 'Selecione o vendedor.', 'err');
     return;
   }
 
@@ -885,6 +1002,7 @@ async function salvarVenda() {
         total: total,
         cliente: cli || '—',
         nomeCliente: cli || '—',
+        vendedor: vendedor,
         observacao: obs,
         notinha: not,
         formaPagamento: pagamento.formaPagamento,
@@ -963,6 +1081,13 @@ async function salvarSangria() {
 // ────────────────────────────────────────────────────────────
 //  HELPERS UI
 // ────────────────────────────────────────────────────────────
+
+function selecionarVendedor(nome, el) {
+  document.getElementById('v-vendedor').value = nome;
+  document.querySelectorAll('.seller-btn').forEach(btn => btn.classList.remove('active'));
+  if (el) el.classList.add('active');
+}
+
 function trocarTab(tab, el) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
@@ -1106,6 +1231,8 @@ function limparFormVenda() {
   document.getElementById('v-cliente').value = '';
   document.getElementById('v-obs').value = '';
   document.getElementById('v-notinha').checked = false;
+  document.getElementById('v-vendedor').value = '';
+  document.querySelectorAll('.seller-btn').forEach(btn => btn.classList.remove('active'));
   document.getElementById('v-pagamento').value = 'dinheiro';
   document.getElementById('v-pag-dinheiro').value = '';
   document.getElementById('v-pag-pix').value = '';
