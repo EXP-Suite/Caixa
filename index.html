@@ -3,211 +3,391 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Caixa — Explosão Alimentos</title>
+<title>Caixa Dinheiro — Explosão Alimentos</title>
+<meta name="description" content="Controle de caixa em dinheiro — Explosão Alimentos">
+<meta property="og:type"    content="website">
+<meta property="og:title"   content="Caixa Dinheiro — Explosão Alimentos">
+<meta property="og:locale"  content="pt_BR">
 <link rel="icon" type="image/png" href="https://explosaoalimentos.com.br/wp-content/uploads/2024/11/logo-menor-e1731554322568.png">
+
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
+
   :root {
-    --bg:#f7f6f3; --card:#ffffff; --border:#e2e0da;
-    --green:#1a5c38; --green-lt:#e8f4ed; --green-md:#2e7d52;
-    --txt-h:#1a1a18; --txt-m:#6b6960; --txt-s:#9b9890;
-    --blue-lt:#eaf1fb; --purple-lt:#f0eafa;
-    --orange-lt:#fff3e6; --red-lt:#fdecea;
-    --shadow:rgba(26,92,56,.12); --radius:14px;
+    --bg:        #f7f6f3;
+    --card:      #ffffff;
+    --border:    #e2e0da;
+    --green:     #1a5c38;
+    --green-lt:  #e8f4ed;
+    --green-md:  #2e7d52;
+    --txt-h:     #1a1a18;
+    --txt-m:     #6b6960;
+    --txt-s:     #9b9890;
+    --blue-lt:   #eaf1fb;
+    --purple-lt: #f0eafa;
+    --orange-lt: #fff3e6;
+    --red-lt:    #fdecea;
+    --shadow:    rgba(26,92,56,.12);
+    --radius:    14px;
   }
-  body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; background:var(--bg); min-height:100vh; color:var(--txt-h); }
 
-  /* HEADER */
-  .header { background:var(--card); border-bottom:1px solid var(--border); padding:16px 24px; display:flex; align-items:center; gap:16px; position:sticky; top:0; z-index:100; box-shadow:0 1px 8px rgba(0,0,0,.06); }
-  .header img { height:46px; }
-  .header-info { flex:1; }
-  .header-title { font-size:17px; font-weight:700; }
-  .header-sub { font-size:12px; color:var(--txt-m); margin-top:1px; }
-  .header-date { font-size:12px; color:var(--txt-m); background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:6px 12px; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+    color: var(--txt-h);
+  }
 
-  /* MAIN */
-  .main { max-width:1180px; margin:0 auto; padding:14px 18px 50px; }
+  /* ── HEADER ── */
+  .header {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 1px 8px rgba(0,0,0,.06);
+  }
+  .header img { height: 46px; width: auto; }
+  .header-info { flex: 1; }
+  .header-title { font-size: 17px; font-weight: 700; color: var(--txt-h); }
+  .header-sub   { font-size: 12px; color: var(--txt-m); margin-top: 1px; }
 
-  /* KPIs */
-  .kpis { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:8px; margin-bottom:12px; }
-  .kpi { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:9px 11px; min-height:82px; transition:box-shadow .18s; }
-  .kpi:hover { box-shadow:0 3px 14px var(--shadow); }
-  .kpi-icon { width:24px; height:24px; border-radius:7px; display:flex; align-items:center; justify-content:center; font-size:14px; margin-bottom:6px; }
-  .kpi-icon.green  { background:var(--green-lt); }
-  .kpi-icon.blue   { background:var(--blue-lt);  }
-  .kpi-icon.red    { background:var(--red-lt);   }
-  .kpi-icon.orange { background:var(--orange-lt);}
-  .kpi-icon.purple { background:var(--purple-lt);}
-  .kpi-label { font-size:9px; font-weight:700; color:var(--txt-m); text-transform:uppercase; letter-spacing:.35px; line-height:1.15; }
-  .kpi-val   { font-size:17px; font-weight:800; color:var(--txt-h); margin-top:2px; line-height:1.05; }
-  .kpi-val.red   { color:#c0392b; }
-  .kpi-val.green { color:var(--green); }
-  .kpi-sub { font-size:9px; color:var(--txt-s); margin-top:2px; line-height:1.1; }
+  .header-date {
+    font-size: 12px; color: var(--txt-m);
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 8px; padding: 6px 12px;
+    display: flex; align-items: center; gap: 6px;
+  }
 
-  /* FILTER */
-  .filter-bar { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:9px 12px; display:flex; align-items:center; gap:10px; margin-bottom:12px; flex-wrap:wrap; }
-  .filter-bar label { font-size:12px; font-weight:600; color:var(--txt-m); }
-  .filter-bar input[type=date] { border:1px solid var(--border); border-radius:8px; padding:6px 10px; font-size:13px; background:var(--bg); outline:none; }
-  .filter-bar input[type=date]:focus { border-color:var(--green); }
-  .btn-sm { padding:6px 14px; border-radius:8px; font-size:12px; font-weight:600; cursor:pointer; border:none; transition:all .15s; }
-  .btn-outline { background:transparent; border:1px solid var(--border); color:var(--txt-m); }
-  .btn-outline:hover { border-color:var(--green); color:var(--green); }
-  .spacer { flex:1; }
+  /* ── MAIN ── */
+  .main { max-width: 1180px; margin: 0 auto; padding: 14px 18px 50px; }
 
-  /* TABS */
-  .tabs { display:flex; gap:4px; margin-bottom:12px; }
-  .tab { padding:7px 14px; border-radius:8px; font-size:12px; font-weight:600; cursor:pointer; border:1px solid transparent; transition:all .16s; color:var(--txt-m); background:transparent; }
-  .tab:hover { background:var(--card); border-color:var(--border); }
-  .tab.active { background:var(--card); border-color:var(--green); color:var(--green); box-shadow:0 2px 12px var(--shadow); }
+  /* ── KPIs ── */
+  .kpis {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .kpi {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 9px 11px;
+    min-height: 82px;
+    transition: box-shadow .18s;
+    position: relative;
+  }
+  .kpi:hover { box-shadow: 0 3px 14px var(--shadow); }
+  .kpi-icon {
+    width: 24px; height: 24px; border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; margin-bottom: 6px;
+  }
+  .kpi-icon.green  { background: var(--green-lt); }
+  .kpi-icon.blue   { background: var(--blue-lt);  }
+  .kpi-icon.red    { background: var(--red-lt);   }
+  .kpi-icon.orange { background: var(--orange-lt);}
+  .kpi-icon.purple { background: var(--purple-lt);} 
+  .kpi-label { font-size: 9px; font-weight: 700; color: var(--txt-m); text-transform: uppercase; letter-spacing: .35px; line-height: 1.15; }
+  .kpi-val   { font-size: 17px; font-weight: 800; color: var(--txt-h); margin-top: 2px; line-height: 1.05; }
+  .kpi-val.red  { color: #c0392b; }
+  .kpi-val.green{ color: var(--green); }
+  .kpi-sub   { font-size: 9px; color: var(--txt-s); margin-top: 2px; line-height: 1.1; }
 
-  .panel { display:none; }
-  .panel.active { display:block; }
+  /* ── DATE FILTER BAR ── */
+  .filter-bar {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 9px 12px;
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 12px; flex-wrap: wrap;
+  }
+  .filter-bar label { font-size: 12px; font-weight: 600; color: var(--txt-m); }
+  .filter-bar input[type=date] {
+    border: 1px solid var(--border); border-radius: 8px;
+    padding: 6px 10px; font-size: 13px; color: var(--txt-h);
+    background: var(--bg); outline: none;
+  }
+  .filter-bar input[type=date]:focus { border-color: var(--green); }
+  .btn-sm {
+    padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 600;
+    cursor: pointer; border: none; transition: all .15s;
+  }
+  .btn-outline {
+    background: transparent; border: 1px solid var(--border); color: var(--txt-m);
+  }
+  .btn-outline:hover { border-color: var(--green); color: var(--green); }
+  .spacer { flex: 1; }
 
-  /* FORM */
-  .form-card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:18px; margin-bottom:16px; }
-  .form-card h3 { font-size:14px; font-weight:700; color:var(--green); margin-bottom:12px; }
-  .form-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:10px; }
-  .field { display:flex; flex-direction:column; gap:5px; }
-  .field.wide { grid-column:span 2; }
-  .field label { font-size:11px; font-weight:600; color:var(--txt-m); text-transform:uppercase; letter-spacing:.5px; }
-  .field input,.field select,.field textarea { border:1px solid var(--border); border-radius:8px; padding:9px 12px; font-size:13px; color:var(--txt-h); background:var(--bg); outline:none; transition:border-color .15s; font-family:inherit; }
-  .field input:focus,.field select:focus,.field textarea:focus { border-color:var(--green); background:#fff; }
-  .field textarea { resize:vertical; min-height:60px; }
-  .form-footer { margin-top:18px; display:flex; gap:10px; align-items:center; }
-  .btn-primary { background:var(--green); color:#fff; border:none; padding:10px 24px; border-radius:9px; font-size:13px; font-weight:700; cursor:pointer; transition:background .15s; display:flex; align-items:center; gap:8px; }
-  .btn-primary:hover { background:var(--green-md); }
-  .btn-primary:disabled { opacity:.5; cursor:not-allowed; }
-  .form-msg { font-size:12px; }
-  .form-msg.ok  { color:var(--green); }
-  .form-msg.err { color:#c0392b; }
+  /* ── TABS ── */
+  .tabs { display: flex; gap: 4px; margin-bottom: 12px; }
+  .tab {
+    padding: 7px 14px; border-radius: 8px; font-size: 12px; font-weight: 600;
+    cursor: pointer; border: 1px solid transparent; transition: all .16s;
+    color: var(--txt-m); background: transparent; display: flex; align-items: center; gap: 7px;
+  }
+  .tab:hover { background: var(--card); border-color: var(--border); }
+  .tab.active {
+    background: var(--card); border-color: var(--green);
+    color: var(--green); box-shadow: 0 2px 12px var(--shadow);
+  }
 
-  /* Notinha */
-  .check-row { display:flex; align-items:center; gap:8px; margin-top:2px; }
-  .check-row input[type=checkbox] { width:16px; height:16px; accent-color:var(--green); cursor:pointer; border:none; padding:0; }
-  .check-row span { font-size:13px; }
+  /* ── PANEL ── */
+  .panel { display: none; }
+  .panel.active { display: block; }
 
-  /* Seller buttons */
-  .seller-options { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
-  .seller-btn { border:1px solid var(--border); background:var(--bg); color:var(--txt-h); border-radius:8px; padding:9px 10px; font-size:12px; font-weight:600; cursor:pointer; transition:all .15s; font-family:inherit; }
-  .seller-btn:hover { border-color:var(--green); color:var(--green); }
-  .seller-btn.active { background:var(--green); border-color:var(--green); color:#fff; }
+  /* ── FORM CARD ── */
+  .form-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 18px; margin-bottom: 16px;
+  }
+  .form-card h3 {
+    font-size: 14px; font-weight: 700; color: var(--green);
+    margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
+  }
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 10px;
+  }
+  .field { display: flex; flex-direction: column; gap: 5px; }
+  .field.wide { grid-column: span 2; }
+  .field label { font-size: 11px; font-weight: 600; color: var(--txt-m); text-transform: uppercase; letter-spacing: .5px; }
+  .field input, .field select, .field textarea {
+    border: 1px solid var(--border); border-radius: 8px;
+    padding: 9px 12px; font-size: 13px; color: var(--txt-h);
+    background: var(--bg); outline: none; transition: border-color .15s;
+    font-family: inherit;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--green); background: #fff; }
+  .field textarea { resize: vertical; min-height: 60px; }
+  .form-footer { margin-top: 18px; display: flex; gap: 10px; align-items: center; }
+  .btn-primary {
+    background: var(--green); color: #fff; border: none;
+    padding: 10px 24px; border-radius: 9px; font-size: 13px; font-weight: 700;
+    cursor: pointer; transition: background .15s; display: flex; align-items: center; gap: 8px;
+  }
+  .btn-primary:hover { background: var(--green-md); }
+  .btn-primary:disabled { opacity: .5; cursor: not-allowed; }
+  .form-msg { font-size: 12px; }
+  .form-msg.ok  { color: var(--green); }
+  .form-msg.err { color: #c0392b; }
+
+  /* Checkbox notinha */
+  .check-row { display: flex; align-items: center; gap: 8px; margin-top: 2px; }
+  .check-row input[type=checkbox] {
+    width: 16px; height: 16px; accent-color: var(--green); cursor: pointer;
+    border: none; padding: 0;
+  }
+  .check-row span { font-size: 13px; color: var(--txt-h); }
+
+  /* Botões de vendedor */
+  .seller-options {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .seller-btn {
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--txt-h);
+    border-radius: 8px;
+    padding: 9px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .15s;
+    font-family: inherit;
+  }
+  .seller-btn:hover { border-color: var(--green); color: var(--green); }
+  .seller-btn.active {
+    background: var(--green);
+    border-color: var(--green);
+    color: #fff;
+  }
+
 
   /* Pagamento misto */
-  .payment-split { display:none; grid-column:1/-1; background:var(--bg); border:1px dashed var(--border); border-radius:10px; padding:14px; }
-  .payment-split.active { display:block; }
-  .payment-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:8px; margin-top:8px; }
-
-  /* Tabela */
-  .table-wrapper { overflow-x:auto; }
-  table { width:100%; border-collapse:collapse; font-size:13px; }
-  thead { background:var(--bg); border-bottom:2px solid var(--border); }
-  th { padding:12px; text-align:left; font-weight:700; color:var(--txt-m); font-size:11px; text-transform:uppercase; }
-  td { padding:10px 12px; border-bottom:1px solid var(--border); }
-  tr:hover td { background:var(--green-lt); }
-  .val-pos { color:var(--green); font-weight:600; }
-  .val-neg { color:#c0392b; font-weight:600; }
-  .empty { text-align:center; padding:40px 20px; color:var(--txt-s); }
-  .empty .ico { font-size:40px; margin-bottom:10px; }
-
-  /* Spinner */
-  .spinner { display:inline-block; width:14px; height:14px; border:2px solid #ffffff44; border-top-color:#fff; border-radius:50%; animation:spin .7s linear infinite; }
-  @keyframes spin { to { transform:rotate(360deg); } }
-
-  #version { position:fixed; bottom:10px; right:14px; font-size:10px; color:var(--txt-s); background:var(--card); border:1px solid var(--border); border-radius:4px; padding:3px 8px; }
-
-  /* Modal URL */
-  .modal-overlay { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,.55); z-index:1000; align-items:center; justify-content:center; }
-  .modal-overlay.active { display:flex; }
-  .modal-box { background:var(--card); border-radius:var(--radius); padding:32px; max-width:520px; width:92%; }
-  .modal-title { font-size:18px; font-weight:700; margin-bottom:8px; }
-  .modal-text { font-size:13px; color:var(--txt-m); margin-bottom:18px; line-height:1.5; }
-  .modal-input { width:100%; border:1px solid var(--border); border-radius:8px; padding:11px; font-size:13px; margin-bottom:14px; outline:none; font-family:inherit; }
-  .modal-input:focus { border-color:var(--green); }
-  .modal-btn { width:100%; padding:11px; border-radius:8px; font-weight:700; cursor:pointer; border:none; background:var(--green); color:#fff; font-size:14px; }
-
-  @media(max-width:600px) {
-    .kpis { grid-template-columns:repeat(auto-fit,minmax(115px,1fr)); }
-    .kpi-val { font-size:15px; }
-    .kpi { padding:8px 9px; min-height:76px; }
+  .payment-split {
+    display: none;
+    grid-column: 1 / -1;
+    background: var(--bg);
+    border: 1px dashed var(--border);
+    border-radius: 10px;
+    padding: 14px;
+  }
+  .payment-split.active { display: block; }
+  .payment-split-title {
+    font-size: 12px; font-weight: 700; color: var(--green);
+    margin-bottom: 10px; display: flex; align-items: center; gap: 6px;
+  }
+  .payment-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+  }
+  .payment-help {
+    margin-top: 8px; font-size: 11px; color: var(--txt-s);
   }
 
-  /* ── MOTORISTA TAG (modal) ── */
+  /* ── TABLE ── */
+  .table-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); overflow: hidden;
+  }
+  .table-header {
+    padding: 16px 20px; display: flex; align-items: center;
+    justify-content: space-between; border-bottom: 1px solid var(--border);
+  }
+  .table-header h3 { font-size: 14px; font-weight: 700; color: var(--txt-h); }
+  .table-count { font-size: 12px; color: var(--txt-s); }
+  .table-header { flex-wrap: wrap; gap: 12px; }
+  .table-tools {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: flex-end;
+  }
+  .table-filter {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 12px; color: var(--txt-m); font-weight: 600;
+  }
+  .table-filter select {
+    border: 1px solid var(--border); border-radius: 8px;
+    padding: 6px 9px; font-size: 12px; color: var(--txt-h);
+    background: var(--bg); outline: none; font-family: inherit;
+  }
+  .table-filter select:focus { border-color: var(--green); background: #fff; }
+  .table-total {
+    font-size: 12px; font-weight: 700; color: var(--green);
+    background: var(--green-lt); border-radius: 8px; padding: 6px 10px;
+    white-space: nowrap;
+  }
+  .table-wrap  { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; }
+  thead th {
+    padding: 10px 14px; text-align: left; font-size: 11px; font-weight: 600;
+    color: var(--txt-m); text-transform: uppercase; letter-spacing: .5px;
+    background: var(--bg); border-bottom: 1px solid var(--border); white-space: nowrap;
+  }
+  tbody tr { transition: background .12s; }
+  tbody tr:hover { background: #fafaf8; }
+  tbody td {
+    padding: 11px 14px; font-size: 13px; color: var(--txt-h);
+    border-bottom: 1px solid var(--border); white-space: nowrap;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  .tag-sim { background: var(--green-lt); color: var(--green); padding: 2px 8px; border-radius: 5px; font-size: 11px; font-weight: 600; }
+  .tag-nao { background: var(--bg); color: var(--txt-s); padding: 2px 8px; border-radius: 5px; font-size: 11px; font-weight: 600; border: 1px solid var(--border); }
+  .val-neg { color: #c0392b; font-weight: 700; }
+
+  /* ── EMPTY / LOADING ── */
+  .empty {
+    text-align: center; padding: 48px 20px;
+    color: var(--txt-s); font-size: 13px;
+  }
+  .empty .ico { font-size: 36px; margin-bottom: 10px; }
+
+  .spinner {
+    display: inline-block; width: 18px; height: 18px;
+    border: 2px solid #ffffff44; border-top-color: #fff;
+    border-radius: 50%; animation: spin .7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── FOOTER ── */
+  /* Versão visual compacta dos cards: Rev 1.9 */
+  #version {
+    position: fixed; bottom: 10px; right: 14px;
+    font-size: 10px; color: var(--txt-s);
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 4px; padding: 3px 8px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.08);
+  }
+
+  @media (max-width: 900px) {
+    .kpis { grid-template-columns: repeat(auto-fit, minmax(115px, 1fr)); }
+    .kpi-val { font-size: 15px; }
+    .kpi { padding: 8px 9px; min-height: 76px; }
+  }
+
+  @media (max-width: 600px) {
+    .header { padding: 12px 16px; }
+    .main   { padding: 12px 12px 50px; }
+    .field.wide { grid-column: span 1; }
+  }
+
+
+  /* -- ACERTOS / MOTORISTAS / IMPRESSAO -- */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,.55); z-index: 1000;
+    align-items: center; justify-content: center;
+  }
+  .modal-overlay.active { display: flex; }
+  .modal-box {
+    background: var(--card); border-radius: var(--radius);
+    padding: 32px; max-width: 520px; width: 92%;
+  }
+  .modal-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+  .modal-text { font-size: 13px; color: var(--txt-m); margin-bottom: 18px; line-height: 1.5; }
+  .modal-input {
+    width: 100%; border: 1px solid var(--border); border-radius: 8px;
+    padding: 11px; font-size: 13px; margin-bottom: 14px;
+    outline: none; font-family: inherit;
+  }
+  .modal-input:focus { border-color: var(--green); }
+  .modal-btn {
+    width: 100%; padding: 11px; border-radius: 8px;
+    font-weight: 700; cursor: pointer; border: none;
+    background: var(--green); color: #fff; font-size: 14px;
+  }
   .motorista-tag {
-    display:inline-flex; align-items:center; gap:6px;
-    background:var(--green-lt); border:1px solid var(--green);
-    color:var(--green); border-radius:20px;
-    padding:5px 10px 5px 12px; font-size:12px; font-weight:600;
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--green-lt); border: 1px solid var(--green);
+    color: var(--green); border-radius: 20px;
+    padding: 5px 10px 5px 12px; font-size: 12px; font-weight: 600;
   }
   .motorista-tag button {
-    background:none; border:none; cursor:pointer;
-    color:var(--green); font-size:14px; line-height:1;
-    padding:0; font-weight:700;
+    background: none; border: none; cursor: pointer;
+    color: var(--green); font-size: 14px; line-height: 1;
+    padding: 0; font-weight: 700;
   }
-  .motorista-tag button:hover { color:#c0392b; }
-
-  /* ── SELEÇÃO E IMPRESSÃO ── */
-  .acerto-check { width:16px; height:16px; accent-color:var(--green); cursor:pointer; }
-  .print-bar {
-    display:flex; align-items:center; gap:10px;
-    background:var(--green-lt); border:1px solid var(--green);
-    border-radius:10px; padding:10px 14px; margin-bottom:12px;
-    font-size:13px; font-weight:600; color:var(--green);
-  }
+  .motorista-tag button:hover { color: #c0392b; }
+  .acerto-check { width: 16px; height: 16px; accent-color: var(--green); cursor: pointer; }
   .btn-print {
-    background:var(--green); color:#fff; border:none;
-    padding:8px 18px; border-radius:8px; font-size:13px; font-weight:700;
-    cursor:pointer; display:flex; align-items:center; gap:6px;
+    background: var(--green); color: #fff; border: none;
+    padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 700;
+    cursor: pointer; display: flex; align-items: center; gap: 6px;
   }
-  .btn-print:hover { background:var(--green-md); }
-  .btn-print:disabled { opacity:.4; cursor:not-allowed; }
-
-  /* ── RELATÓRIO IMPRESSÃO ── */
+  .btn-print:hover { background: var(--green-md); }
+  .btn-print:disabled { opacity: .4; cursor: not-allowed; }
   @media print {
-    body > *:not(#print-area) { display:none !important; }
-    #print-area { display:block !important; }
-    #print-area { margin:0; padding:0; }
+    body > *:not(#print-area) { display: none !important; }
+    #print-area { display: block !important; margin: 0; padding: 0; }
   }
-  #print-area {
-    display:none;
-    font-family: Arial, sans-serif;
-    font-size:13px;
-    color:#111;
-    max-width:800px;
-    margin:0 auto;
-    padding:20px;
-  }
-  .print-header { display:flex; justify-content:space-between; align-items:flex-start; border-bottom:2px solid #1a5c38; padding-bottom:12px; margin-bottom:16px; }
-  .print-logo { font-size:22px; font-weight:900; color:#1a5c38; letter-spacing:-0.5px; }
-  .print-logo small { display:block; font-size:11px; font-weight:400; color:#555; margin-top:2px; }
-  .print-meta { text-align:right; font-size:11px; color:#555; }
-  .print-title { font-size:15px; font-weight:800; color:#1a5c38; margin-bottom:12px; text-transform:uppercase; letter-spacing:.5px; }
-  .print-table { width:100%; border-collapse:collapse; margin-bottom:18px; }
-  .print-table th { background:#1a5c38; color:#fff; padding:8px 10px; text-align:left; font-size:11px; text-transform:uppercase; }
-  .print-table td { padding:8px 10px; border-bottom:1px solid #ddd; font-size:12px; }
-  .print-table tr:nth-child(even) td { background:#f5f5f3; }
-  .print-total-box { background:#e8f4ed; border:2px solid #1a5c38; border-radius:8px; padding:14px 18px; display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; }
-  .print-total-label { font-size:13px; font-weight:700; color:#1a5c38; }
-  .print-total-val { font-size:22px; font-weight:900; color:#1a5c38; }
-  .print-assinaturas { display:grid; grid-template-columns:1fr 1fr; gap:40px; margin-top:30px; }
-  .print-ass-box { border-top:1px solid #999; padding-top:8px; text-align:center; font-size:11px; color:#555; }
-  .print-obs { background:#fff8e6; border:1px solid #e0c060; border-radius:6px; padding:10px 14px; margin-bottom:14px; font-size:12px; }
-  .print-obs strong { color:#a06020; }
+  #print-area { display: none; }
 </style>
 </head>
 <body>
 
+<!-- ══ HEADER ══ -->
 <div class="header">
-  <img src="https://explosaoalimentos.com.br/wp-content/uploads/2024/11/logo-menor-e1731554322568.png" alt="Logo">
+  <img src="https://explosaoalimentos.com.br/wp-content/uploads/2024/11/logo-menor-e1731554322568.png" alt="Explosão Alimentos">
   <div class="header-info">
-    <div class="header-title">🛒 Controle de Caixa</div>
-    <div class="header-sub">Explosão Alimentos</div>
+    <div class="header-title">Caixa Dinheiro</div>
+    <div class="header-sub">Controle de vendas e sangrias em dinheiro</div>
   </div>
-  <div class="header-date" id="dataHoje">—</div>
+  <div class="header-date">📅 <span id="dataHoje">—</span></div>
 </div>
 
+<!-- ══ MAIN ══ -->
 <div class="main">
 
-  <!-- ── KPIs ── -->
+  <!-- KPIs -->
   <div class="kpis">
     <div class="kpi">
       <div class="kpi-icon green">💵</div>
@@ -265,13 +445,13 @@
     </div>
     <div class="kpi">
       <div class="kpi-icon orange">📊</div>
-      <div class="kpi-label">Saldo Dinheiro</div>
+      <div class="kpi-label">Saldo em Dinheiro</div>
       <div class="kpi-val" id="kpiSaldo">—</div>
       <div class="kpi-sub">dinheiro − sangrias</div>
     </div>
     <div class="kpi">
       <div class="kpi-icon orange">🧾</div>
-      <div class="kpi-label">Com Notinha</div>
+      <div class="kpi-label">Vendas com Notinha</div>
       <div class="kpi-val" id="kpiNotinha">—</div>
       <div class="kpi-sub" id="kpiSemNotinha">—</div>
     </div>
@@ -283,7 +463,7 @@
     </div>
   </div>
 
-  <!-- ── FILTRO ── -->
+  <!-- FILTRO DE DATA -->
   <div class="filter-bar">
     <label>Filtrar por data:</label>
     <input type="date" id="filtroData">
@@ -293,128 +473,169 @@
     <button class="btn-sm btn-outline" onclick="carregarDados()">🔄 Atualizar</button>
   </div>
 
-  <!-- ── TABS ── -->
+  <!-- TABS -->
   <div class="tabs">
-    <button class="tab active" onclick="trocarTab('vendas',this)">🛒 Vendas</button>
-    <button class="tab"        onclick="trocarTab('sangrias',this)">💸 Sangrias</button>
-    <button class="tab"        onclick="trocarTab('acertos',this)">🚚 Acertos</button>
+    <button class="tab active" onclick="trocarTab('vendas', this)">
+      🛒 Vendas
+    </button>
+    <button class="tab" onclick="trocarTab('sangrias', this)">
+      💸 Sangrias de Caixa
+    </button>
+    <button class="tab" onclick="trocarTab('acertos', this)">
+      🚚 Acertos
+    </button>
   </div>
 
   <!-- ══ PAINEL VENDAS ══ -->
   <div class="panel active" id="panel-vendas">
+
     <div class="form-card">
-      <h3>🛒 Registrar Venda</h3>
+      <h3>➕ Registrar Nova Venda</h3>
       <div class="form-grid">
         <div class="field">
-          <label>Nº da Venda *</label>
-          <input type="text" id="v-numero" placeholder="Ex.: 1001">
+          <label>Nº da Venda (ERP) *</label>
+          <input type="number" id="v-numero" placeholder="Nº do Fácil123" required>
         </div>
         <div class="field">
-          <label>Data *</label>
+          <label>Data</label>
           <input type="date" id="v-data">
         </div>
         <div class="field">
-          <label>Total da Venda *</label>
-          <input type="text" id="v-total" placeholder="R$ 0,00">
+          <label>Total da Venda (R$) *</label>
+          <input type="text" id="v-total" placeholder="0,00" inputmode="decimal" required>
         </div>
         <div class="field">
-          <label>Cliente</label>
-          <input type="text" id="v-cliente" placeholder="Nome do cliente">
+          <label>Forma de Pagamento</label>
+          <select id="v-pagamento" onchange="togglePagamentoMisto()">
+            <option value="dinheiro">Dinheiro</option>
+            <option value="pix">PIX</option>
+            <option value="credito">Cartão de crédito</option>
+            <option value="debito">Cartão de débito</option>
+            <option value="boleto">Boleto</option>
+            <option value="carteira">Carteira</option>
+            <option value="cheque">Cheque</option>
+            <option value="misto">Parte de uma forma e parte de outra</option>
+          </select>
         </div>
         <div class="field">
+          <label>Vendedor *</label>
+          <input type="hidden" id="v-vendedor" value="">
+          <div class="seller-options" id="vendedor-opcoes">
+            <button type="button" class="seller-btn" onclick="selecionarVendedor('Maria Eduarda', this)">Maria Eduarda</button>
+            <button type="button" class="seller-btn" onclick="selecionarVendedor('Maria Júlia', this)">Maria Júlia</button>
+            <button type="button" class="seller-btn" onclick="selecionarVendedor('Lara', this)">Lara</button>
+            <button type="button" class="seller-btn" onclick="selecionarVendedor('Outro', this)">Outro</button>
+          </div>
+        </div>
+        <div class="payment-split" id="pagamento-misto-box">
+          <div class="payment-split-title">💳 Detalhar pagamento misto</div>
+          <div class="payment-grid">
+            <div class="field">
+              <label>Dinheiro (R$)</label>
+              <input type="text" id="v-pag-dinheiro" placeholder="0,00" inputmode="decimal">
+            </div>
+            <div class="field">
+              <label>PIX (R$)</label>
+              <input type="text" id="v-pag-pix" placeholder="0,00" inputmode="decimal">
+            </div>
+            <div class="field">
+              <label>Cartão crédito (R$)</label>
+              <input type="text" id="v-pag-credito" placeholder="0,00" inputmode="decimal">
+            </div>
+            <div class="field">
+              <label>Cartão débito (R$)</label>
+              <input type="text" id="v-pag-debito" placeholder="0,00" inputmode="decimal">
+            </div>
+            <div class="field">
+              <label>Boleto (R$)</label>
+              <input type="text" id="v-pag-boleto" placeholder="0,00" inputmode="decimal">
+            </div>
+            <div class="field">
+              <label>Carteira (R$)</label>
+              <input type="text" id="v-pag-carteira" placeholder="0,00" inputmode="decimal">
+            </div>
+            <div class="field">
+              <label>Cheque (R$)</label>
+              <input type="text" id="v-pag-cheque" placeholder="0,00" inputmode="decimal">
+            </div>
+          </div>
+          <div class="form-footer" style="margin-top:12px;">
+            <button type="button" class="btn-sm btn-outline" onclick="preencherRestantePix()">Colocar restante em PIX</button>
+            <span class="payment-help" id="pagamento-misto-resumo">Ex.: informe R$ 200,00 em dinheiro e clique para jogar o restante no PIX, ou detalhe entre as formas disponíveis.</span>
+          </div>
+        </div>
+        <div class="field">
+          <label>Nome do Cliente *</label>
+          <input type="text" id="v-cliente" placeholder="Nome do cliente" required>
+        </div>
+        <div class="field wide">
           <label>Observação</label>
-          <input type="text" id="v-obs" placeholder="Opcional">
+          <textarea id="v-obs" placeholder="Observações opcionais…"></textarea>
         </div>
-        <div class="field" style="justify-content:flex-end; padding-bottom:2px;">
-          <label>&nbsp;</label>
+        <div class="field">
+          <label>Notinha</label>
           <div class="check-row">
             <input type="checkbox" id="v-notinha">
-            <span>Notinha fiscal</span>
+            <span>Notinha emitida</span>
           </div>
         </div>
       </div>
-
-      <!-- Vendedor -->
-      <div style="margin-top:14px;">
-        <div class="field" style="margin-bottom:8px;"><label>Vendedor</label></div>
-        <div class="seller-options" id="seller-options">
-          <button class="seller-btn" onclick="selecionarVendedor('Caixa', this)">🏪 Caixa</button>
-          <button class="seller-btn" onclick="selecionarVendedor('Externo', this)">🌐 Externo</button>
-        </div>
-        <input type="hidden" id="v-vendedor">
-      </div>
-
-      <!-- Pagamento -->
-      <div style="margin-top:14px;">
-        <div class="field">
-          <label>Forma de Pagamento *</label>
-          <select id="v-pagamento" onchange="togglePagamentoMisto()">
-            <option value="Dinheiro">💵 Dinheiro</option>
-            <option value="PIX">⚡ PIX</option>
-            <option value="Cartão de crédito">💳 Cartão Crédito</option>
-            <option value="Cartão de débito">💳 Cartão Débito</option>
-            <option value="Boleto">📄 Boleto</option>
-            <option value="Carteira">🧾 Carteira</option>
-            <option value="Cheque">📝 Cheque</option>
-            <option value="misto">🔀 Pagamento Misto</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- Misto -->
-      <div class="payment-split" id="pagamento-misto">
-        <div style="font-size:12px;font-weight:700;color:var(--green);margin-bottom:10px;">Detalhe por forma</div>
-        <div class="payment-grid">
-          <div class="field"><label>Dinheiro</label><input type="text" id="v-pag-dinheiro" placeholder="R$ 0,00" oninput="atualizarResumoMisto()"></div>
-          <div class="field"><label>PIX</label><input type="text" id="v-pag-pix" placeholder="R$ 0,00" oninput="atualizarResumoMisto()"></div>
-          <div class="field"><label>Cartão Crédito</label><input type="text" id="v-pag-credito" placeholder="R$ 0,00" oninput="atualizarResumoMisto()"></div>
-          <div class="field"><label>Cartão Débito</label><input type="text" id="v-pag-debito" placeholder="R$ 0,00" oninput="atualizarResumoMisto()"></div>
-          <div class="field"><label>Boleto</label><input type="text" id="v-pag-boleto" placeholder="R$ 0,00" oninput="atualizarResumoMisto()"></div>
-          <div class="field"><label>Carteira</label><input type="text" id="v-pag-carteira" placeholder="R$ 0,00" oninput="atualizarResumoMisto()"></div>
-          <div class="field"><label>Cheque</label><input type="text" id="v-pag-cheque" placeholder="R$ 0,00" oninput="atualizarResumoMisto()"></div>
-        </div>
-        <div style="margin-top:10px;background:var(--card);border:1px dashed var(--border);border-radius:8px;padding:8px;font-size:12px;">
-          <strong style="color:var(--green);">Resumo:</strong> <span id="resumo-misto">—</span>
-        </div>
-      </div>
-
       <div class="form-footer">
         <button class="btn-primary" id="btn-salvar-venda" onclick="salvarVenda()">
           <span id="ico-venda">💾</span> Salvar Venda
         </button>
-        <span class="spacer"></span>
-        <span id="msg-venda" class="form-msg"></span>
+        <span class="form-msg" id="msg-venda"></span>
       </div>
     </div>
 
-    <div class="form-card">
-      <h3>📋 Vendas Registradas <span id="count-vendas" style="font-size:12px;color:var(--txt-m);font-weight:400;"></span></h3>
-      <div class="table-wrapper">
+    <div class="table-card">
+      <div class="table-header">
+        <h3>📋 Vendas Registradas</h3>
+        <div class="table-tools">
+          <label class="table-filter">
+            Vendedor:
+            <select id="filtroVendedor" onchange="alterarFiltroVendedor(this.value)">
+              <option value="">Todos</option>
+              <option value="Maria Eduarda">Maria Eduarda</option>
+              <option value="Maria Júlia">Maria Júlia</option>
+              <option value="Lara">Lara</option>
+              <option value="Outro">Outro</option>
+            </select>
+          </label>
+          <span class="table-total" id="total-vendas-filtradas">Total: —</span>
+          <span class="table-count" id="count-vendas">—</span>
+        </div>
+      </div>
+      <div class="table-wrap">
         <table>
-          <thead><tr>
-            <th style="width:70px">Venda</th>
-            <th style="width:90px">Data</th>
-            <th>Cliente</th>
-            <th style="width:110px">Total</th>
-            <th>Pagamento</th>
-            <th style="width:100px">Vendedor</th>
-            <th style="width:50px">Nota</th>
-          </tr></thead>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Data</th>
+              <th>Total</th>
+              <th>Pagamento</th>
+              <th>Cliente</th>
+              <th>Vendedor</th>
+              <th>Observação</th>
+              <th>Notinha</th>
+            </tr>
+          </thead>
           <tbody id="tb-vendas">
-            <tr><td colspan="7"><div class="empty"><div class="ico">📭</div>Carregando…</div></td></tr>
+            <tr><td colspan="8"><div class="empty"><div class="ico">📭</div>Carregando dados…</div></td></tr>
           </tbody>
         </table>
       </div>
     </div>
-  </div>
+  </div><!-- /panel-vendas -->
 
   <!-- ══ PAINEL SANGRIAS ══ -->
   <div class="panel" id="panel-sangrias">
+
     <div class="form-card">
-      <h3>💸 Registrar Sangria</h3>
+      <h3>➕ Registrar Sangria de Caixa</h3>
       <div class="form-grid">
         <div class="field">
-          <label>Data *</label>
+          <label>Data</label>
           <input type="date" id="s-data">
         </div>
         <div class="field">
@@ -422,45 +643,49 @@
           <input type="time" id="s-hora">
         </div>
         <div class="field">
-          <label>Valor *</label>
-          <input type="text" id="s-valor" placeholder="R$ 0,00">
+          <label>Valor Retirado (R$)</label>
+          <input type="text" id="s-valor" placeholder="0,00" inputmode="decimal">
+        </div>
+        <div class="field">
+          <label>Responsável</label>
+          <input type="text" id="s-responsavel" placeholder="Nome do responsável">
         </div>
         <div class="field wide">
-          <label>Motivo</label>
-          <input type="text" id="s-motivo" placeholder="Motivo da retirada">
-        </div>
-        <div class="field wide">
-          <label>Responsável *</label>
-          <input type="text" id="s-responsavel" placeholder="Nome de quem retirou">
+          <label>Motivo da Sangria</label>
+          <textarea id="s-motivo" placeholder="Descreva o motivo…"></textarea>
         </div>
       </div>
       <div class="form-footer">
         <button class="btn-primary" id="btn-salvar-sangria" onclick="salvarSangria()">
           <span id="ico-sangria">💾</span> Salvar Sangria
         </button>
-        <span class="spacer"></span>
-        <span id="msg-sangria" class="form-msg"></span>
+        <span class="form-msg" id="msg-sangria"></span>
       </div>
     </div>
 
-    <div class="form-card">
-      <h3>📋 Sangrias Registradas <span id="count-sangrias" style="font-size:12px;color:var(--txt-m);font-weight:400;"></span></h3>
-      <div class="table-wrapper">
+    <div class="table-card">
+      <div class="table-header">
+        <h3>📋 Sangrias Registradas</h3>
+        <span class="table-count" id="count-sangrias">—</span>
+      </div>
+      <div class="table-wrap">
         <table>
-          <thead><tr>
-            <th style="width:100px">Data</th>
-            <th style="width:70px">Hora</th>
-            <th style="width:110px">Valor</th>
-            <th>Motivo</th>
-            <th>Responsável</th>
-          </tr></thead>
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Hora</th>
+              <th>Valor</th>
+              <th>Motivo</th>
+              <th>Responsável</th>
+            </tr>
+          </thead>
           <tbody id="tb-sangrias">
-            <tr><td colspan="5"><div class="empty"><div class="ico">📭</div>Carregando…</div></td></tr>
+            <tr><td colspan="5"><div class="empty"><div class="ico">📭</div>Carregando dados…</div></td></tr>
           </tbody>
         </table>
       </div>
     </div>
-  </div>
+  </div><!-- /panel-sangrias -->
 
   <!-- ══ PAINEL ACERTOS ══ -->
   <div class="panel" id="panel-acertos">
@@ -485,15 +710,14 @@
         </div>
         <div class="field">
           <label>Total Recebido *</label>
-          <input type="text" id="a-total" placeholder="R$ 0,00" oninput="atualizarResumoAcerto()">
+          <input type="text" id="a-total" placeholder="R$ 0,00" inputmode="decimal" oninput="atualizarResumoAcerto()">
         </div>
       </div>
 
-      <!-- Motorista -->
       <div style="margin-top:14px;">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
           <label style="font-size:11px;font-weight:700;color:var(--txt-m);text-transform:uppercase;letter-spacing:.5px;">🚗 Motorista *</label>
-          <button onclick="abrirGestaoMotoristas()" title="Gerenciar motoristas"
+          <button type="button" onclick="abrirGestaoMotoristas()" title="Gerenciar motoristas"
             style="background:none;border:1px solid var(--border);border-radius:6px;padding:2px 8px;font-size:11px;color:var(--txt-m);cursor:pointer;">
             ✏️ Editar lista
           </button>
@@ -501,18 +725,19 @@
         <div class="seller-options" id="motorista-btns" style="grid-template-columns:repeat(3,minmax(0,1fr))"></div>
         <input type="hidden" id="a-motorista">
         <div id="a-motorista-aviso" style="font-size:11px;color:#c0392b;margin-top:4px;display:none;">Selecione um motorista</div>
+      </div>
 
       <div style="margin-top:14px;">
         <div style="font-size:12px;font-weight:700;color:var(--green);margin-bottom:10px;">Formas de Pagamento</div>
         <div class="payment-grid">
-          <div class="field"><label>Dinheiro</label><input type="text" id="a-pag-dinheiro" placeholder="R$ 0,00" oninput="atualizarResumoAcerto()"></div>
-          <div class="field"><label>PIX</label><input type="text" id="a-pag-pix" placeholder="R$ 0,00" oninput="atualizarResumoAcerto()"></div>
-          <div class="field"><label>Cartão Crédito</label><input type="text" id="a-pag-credito" placeholder="R$ 0,00" oninput="atualizarResumoAcerto()"></div>
-          <div class="field"><label>Cartão Débito</label><input type="text" id="a-pag-debito" placeholder="R$ 0,00" oninput="atualizarResumoAcerto()"></div>
-          <div class="field"><label>Boleto</label><input type="text" id="a-pag-boleto" placeholder="R$ 0,00" oninput="atualizarResumoAcerto()"></div>
-          <div class="field"><label>Carteira</label><input type="text" id="a-pag-carteira" placeholder="R$ 0,00" oninput="atualizarResumoAcerto()"></div>
-          <div class="field"><label>Cheque</label><input type="text" id="a-pag-cheque" placeholder="R$ 0,00" oninput="atualizarResumoAcerto()"></div>
-          <div class="field"><label>🧾 Comprovante Máquina</label><input type="text" id="a-pag-comprovante" placeholder="R$ 0,00" oninput="atualizarResumoAcerto()"></div>
+          <div class="field"><label>Dinheiro</label><input type="text" id="a-pag-dinheiro" placeholder="R$ 0,00" inputmode="decimal" oninput="atualizarResumoAcerto()"></div>
+          <div class="field"><label>PIX</label><input type="text" id="a-pag-pix" placeholder="R$ 0,00" inputmode="decimal" oninput="atualizarResumoAcerto()"></div>
+          <div class="field"><label>Cartão Crédito</label><input type="text" id="a-pag-credito" placeholder="R$ 0,00" inputmode="decimal" oninput="atualizarResumoAcerto()"></div>
+          <div class="field"><label>Cartão Débito</label><input type="text" id="a-pag-debito" placeholder="R$ 0,00" inputmode="decimal" oninput="atualizarResumoAcerto()"></div>
+          <div class="field"><label>Boleto</label><input type="text" id="a-pag-boleto" placeholder="R$ 0,00" inputmode="decimal" oninput="atualizarResumoAcerto()"></div>
+          <div class="field"><label>Carteira</label><input type="text" id="a-pag-carteira" placeholder="R$ 0,00" inputmode="decimal" oninput="atualizarResumoAcerto()"></div>
+          <div class="field"><label>Cheque</label><input type="text" id="a-pag-cheque" placeholder="R$ 0,00" inputmode="decimal" oninput="atualizarResumoAcerto()"></div>
+          <div class="field"><label>🧾 Comprovante Máquina</label><input type="text" id="a-pag-comprovante" placeholder="R$ 0,00" inputmode="decimal" oninput="atualizarResumoAcerto()"></div>
         </div>
         <div style="margin-top:10px;background:var(--bg);border:1px dashed var(--border);border-radius:8px;padding:10px;font-size:12px;">
           <strong style="color:var(--green);">Resumo:</strong> <span id="resumo-acerto">Informe o total e as formas de pagamento</span>
@@ -528,43 +753,47 @@
         <button class="btn-primary" id="btn-salvar-acerto" onclick="salvarAcerto()">
           <span id="ico-acerto">💾</span> Salvar Acerto
         </button>
-        <span class="spacer"></span>
-        <span id="msg-acerto" class="form-msg"></span>
+        <span class="form-msg" id="msg-acerto"></span>
       </div>
     </div>
 
-    <div class="form-card">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;">
-        <h3 style="margin-bottom:0;">📋 Acertos Registrados <span id="count-acertos" style="font-size:12px;color:var(--txt-m);font-weight:400;"></span></h3>
-        <div class="spacer"></div>
-        <span id="print-bar-count" style="font-size:12px;color:var(--green);font-weight:600;display:none;"></span>
-        <button class="btn-print" id="btn-print" onclick="imprimirAcertos()" disabled
-          style="opacity:.4;cursor:not-allowed;">
-          🖨️ Imprimir selecionados
-        </button>
+    <div class="table-card">
+      <div class="table-header">
+        <h3>📋 Acertos Registrados</h3>
+        <div class="table-tools">
+          <span id="print-bar-count" style="font-size:12px;color:var(--green);font-weight:600;display:none;"></span>
+          <button class="btn-print" id="btn-print" onclick="imprimirAcertos()" disabled>
+            🖨️ Imprimir selecionados
+          </button>
+          <span class="table-count" id="count-acertos">—</span>
+        </div>
       </div>
-      <div class="table-wrapper">
+      <div class="table-wrap">
         <table>
-          <thead><tr>
-            <th style="width:32px"><input type="checkbox" class="acerto-check" id="check-all" onclick="toggleTodos(this)"></th>
-            <th style="width:70px">Venda</th>
-            <th style="width:100px">Data/Hora</th>
-            <th>Cliente</th>
-            <th>Motorista</th>
-            <th style="width:110px">Total</th>
-            <th>Pagamento</th>
-          </tr></thead>
+          <thead>
+            <tr>
+              <th style="width:32px"><input type="checkbox" class="acerto-check" id="check-all" onclick="toggleTodos(this)"></th>
+              <th>Venda</th>
+              <th>Data/Hora</th>
+              <th>Cliente</th>
+              <th>Motorista</th>
+              <th>Total</th>
+              <th>Pagamento</th>
+            </tr>
+          </thead>
           <tbody id="tb-acertos">
-            <tr><td colspan="7"><div class="empty"><div class="ico">📭</div>Carregando…</div></td></tr>
+            <tr><td colspan="7"><div class="empty"><div class="ico">📭</div>Carregando dados…</div></td></tr>
           </tbody>
         </table>
       </div>
     </div>
-  </div>
+  </div><!-- /panel-acertos -->
+
 
 </div><!-- /main -->
 
-<div id="version">Rev 3.1 — Vendas, Sangrias e Acertos</div>
+<div id="version">Rev 2.4 — filtro vendedor + Acertos</div>
+
 
 <!-- Modal Motoristas -->
 <div class="modal-overlay" id="modalMotoristas">
@@ -584,61 +813,610 @@
   </div>
 </div>
 
-<!-- Área de Impressão -->
 <div id="print-area"></div>
 
 <script>
 // ────────────────────────────────────────────────────────────
-//  CONFIG
+//  CONFIG — troque apenas a URL do script se precisar
 // ────────────────────────────────────────────────────────────
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbztWZAYjUHWjhHO_ZchHGe-jqYJWAz8kTiH9KPYqCuRD1tywBR7133MhW5LHsEewQ65KQ/exec';
+
+// ────────────────────────────────────────────────────────────
 let todosVendas   = [];
 let todosSangrias = [];
 let todosAcertos  = [];
-let filtroAtual   = null;
+let filtroAtual   = null;   // null = todos; 'YYYY-MM-DD' = filtra
+let filtroVendedor = '';     // '' = todos; nome = filtra vendedor
 
 // ────────────────────────────────────────────────────────────
 //  INIT
 // ────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
-  inicializar();
-});
-
-function inicializar() {
   const hoje = hojeStr();
-  document.getElementById('dataHoje').textContent  = formatarDataBR(hoje);
-  document.getElementById('v-data').value          = hoje;
-  document.getElementById('s-data').value          = hoje;
-  document.getElementById('s-hora').value          = horaAtual();
-  document.getElementById('a-data').value          = hoje;
-  document.getElementById('a-hora').value          = horaAtual();
-  document.getElementById('filtroData').value      = hoje;
+  document.getElementById('dataHoje').textContent = formatarDataBR(hoje);
+  document.getElementById('v-data').value = hoje;
+  document.getElementById('s-data').value = hoje;
+  document.getElementById('s-hora').value = horaAtual();
+  document.getElementById('a-data').value = hoje;
+  document.getElementById('a-hora').value = horaAtual();
+  document.getElementById('filtroData').value = hoje;
   filtroAtual = hoje;
-  document.getElementById('filtroData').addEventListener('change', e => {
-    filtroAtual = e.target.value || null;
-    renderizar();
-  });
   renderBotoesMotorista();
   carregarDados();
-}
+});
 
 // ────────────────────────────────────────────────────────────
-//  DADOS
+//  CARREGAR DADOS DO SHEETS
 // ────────────────────────────────────────────────────────────
 async function carregarDados() {
   try {
-    const r = await fetch(SCRIPT_URL + '?acao=tudo');
-    const j = await r.json();
-    todosVendas   = j.vendas   || [];
-    todosSangrias = j.sangrias || [];
-    todosAcertos  = j.acertos  || [];
+    const r    = await fetch(SCRIPT_URL + '?acao=tudo');
+    const json = await r.json();
+
+    todosVendas   = json.vendas   || [];
+    todosSangrias = json.sangrias || [];
+    todosAcertos  = json.acertos  || [];
+
     renderizar();
-  } catch(e) {
+  } catch (e) {
     console.error(e);
-    mostrarVazio('tb-vendas',   7, '❌ Erro ao carregar dados.');
-    mostrarVazio('tb-sangrias', 5, '❌ Erro ao carregar dados.');
-    mostrarVazio('tb-acertos',  6, '❌ Erro ao carregar dados.');
+    mostrarVazio('tb-vendas',   8, '❌ Erro ao carregar dados. Verifique a conexão.');
+    mostrarVazio('tb-sangrias', 5, '❌ Erro ao carregar dados. Verifique a conexão.');
+    mostrarVazio('tb-acertos',  7, '❌ Erro ao carregar dados. Verifique a conexão.');
   }
+}
+
+// ────────────────────────────────────────────────────────────
+//  RENDERIZAR TABELAS + KPIs
+// ────────────────────────────────────────────────────────────
+function renderizar() {
+  const vendasPorData = filtroAtual
+    ? todosVendas.filter(v => normalizarData(getCampo(v, ['Data', 'data'])) === filtroAtual)
+    : todosVendas;
+
+  const vFiltr = filtroVendedor
+    ? vendasPorData.filter(v => normalizarVendedor(obterVendedorVenda(v)) === normalizarVendedor(filtroVendedor))
+    : vendasPorData;
+
+  const sFiltr = filtroAtual
+    ? todosSangrias.filter(s => normalizarData(getCampo(s, ['Data', 'data'])) === filtroAtual)
+    : todosSangrias;
+
+  const aFiltr = filtroAtual
+    ? todosAcertos.filter(a => normalizarData(getCampo(a, ['Data', 'data'])) === filtroAtual)
+    : todosAcertos;
+
+  renderVendas(vFiltr);
+  renderSangrias(sFiltr);
+  renderAcertos(aFiltr);
+
+  // Os cards superiores seguem o período selecionado.
+  // O filtro por vendedor afeta a tabela e o totalizador de Vendas Registradas.
+  atualizarKPIs(vendasPorData, sFiltr, aFiltr);
+}
+
+function renderVendas(lista) {
+  const tb = document.getElementById('tb-vendas');
+  document.getElementById('count-vendas').textContent =
+    lista.length + (lista.length === 1 ? ' venda' : ' vendas');
+
+  atualizarTotalizadorVendasRegistradas(lista);
+
+  if (!lista.length) {
+    mostrarVazio('tb-vendas', 8, '📭 Nenhuma venda encontrada para o período.');
+    return;
+  }
+
+  // Ordena decrescente pelo número da venda
+  const ordenado = [...lista].sort((a, b) =>
+    numero(getCampo(vazioSeInvalido(b), ['Numero da venda', 'Número da venda', 'numero'])) -
+    numero(getCampo(vazioSeInvalido(a), ['Numero da venda', 'Número da venda', 'numero']))
+  );
+
+  tb.innerHTML = ordenado.map(v => {
+    const num    = getCampo(v, ['Numero da venda', 'Número da venda', 'numero']) || '—';
+    const data   = formatarDataBR(normalizarData(getCampo(v, ['Data', 'data'])));
+    const total  = fmtMoeda(getCampo(v, ['Total da venda', 'total']) || 0);
+
+    // Usa o cabeçalho novo exatamente:
+    // Forma de pagamento | Pagamento detalhado | Nome do cliente | Observação | Notinha
+    const pagDetalhado = limparTextoPagamento(getCampo(v, ['Pagamento detalhado', 'pagamentoDetalhado', 'pagamento_detalhado']));
+    const pag    = pagDetalhado || montarPagamentoTabela(v);
+    const cli    = obterClienteVenda(v) || '—';
+    const vendedor = obterVendedorVenda(v) || '—';
+    const obs    = limparTextoTabela(getCampo(v, ['Observação', 'Observacao', 'observacao', 'observação'])) || '—';
+    const notVal = limparTextoTabela(getCampo(v, ['Notinha', 'notinha']));
+    const not    = notVal.toString().toLowerCase();
+    const tagNot = (not === 'sim' || not === 'true')
+      ? '<span class="tag-sim">Sim</span>'
+      : '<span class="tag-nao">Não</span>';
+
+    return `<tr>
+      <td>${num}</td>
+      <td>${data}</td>
+      <td>${total}</td>
+      <td style="max-width:230px;white-space:normal;font-size:12px;color:var(--txt-m)">${pag}</td>
+      <td>${cli}</td>
+      <td>${vendedor}</td>
+      <td style="max-width:220px;white-space:normal;font-size:12px;color:var(--txt-m)">${obs}</td>
+      <td>${tagNot}</td>
+    </tr>`;
+  }).join('');
+}
+
+function vazioSeInvalido(obj) { return obj || {}; }
+
+function limparTextoTabela(valor) {
+  const s = (valor === null || valor === undefined) ? '' : String(valor).trim();
+  return (s === '' || s === '-') ? '' : s;
+}
+
+function limparTextoPagamento(valor) {
+  const s = limparTextoTabela(valor);
+  if (!s) return '';
+
+  // Evita exibir Notinha/valores desalinhados como pagamento em linhas gravadas com script antigo.
+  const normal = normalizarChave(s);
+  const invalidos = ['sim', 'nao', 'true', 'false'];
+  if (invalidos.includes(normal)) return '';
+
+  return s;
+}
+
+function obterClienteVenda(v) {
+  // Cabeçalho novo correto: Nome do cliente.
+  let cliente = limparTextoTabela(getCampo(v, [
+    'Nome do cliente',
+    'Nome do Cliente',
+    'Cliente',
+    'cliente',
+    'nomeCliente',
+    'nome_cliente'
+  ]));
+  if (cliente) return cliente;
+
+  // Compatibilidade com linhas antigas gravadas antes da expansão do cabeçalho.
+  // Antes, o cliente ficava na 4ª coluna. Com o novo cabeçalho, essa posição virou "Dinheiro".
+  // Se a coluna Dinheiro contiver texto em vez de número, trata como cliente antigo.
+  const possivelClienteAntigo = limparTextoTabela(getCampo(v, ['Dinheiro', 'dinheiro']));
+  if (possivelClienteAntigo && isNaN(numero(possivelClienteAntigo))) {
+    return possivelClienteAntigo;
+  }
+
+  return '';
+}
+
+function obterVendedorVenda(v) {
+  return limparTextoTabela(getCampo(v, [
+    'Vendedor',
+    'vendedor',
+    'Nome do vendedor',
+    'nomeVendedor',
+    'nome_vendedor'
+  ]));
+}
+
+function normalizarVendedor(nome) {
+  return String(nome || '')
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim();
+}
+
+function atualizarTotalizadorVendasRegistradas(lista) {
+  const total = lista.reduce((soma, v) => soma + numero(getCampo(v, ['Total da venda', 'Total Venda', 'total', 'totalVenda']) || 0), 0);
+  const dataTxt = filtroAtual ? formatarDataBR(filtroAtual) : 'todos os dias';
+  const vendedorTxt = filtroVendedor ? ' • ' + filtroVendedor : ' • todos os vendedores';
+  const el = document.getElementById('total-vendas-filtradas');
+  if (el) el.textContent = `Total: ${fmtMoeda(total)} • ${dataTxt}${vendedorTxt}`;
+}
+
+function alterarFiltroVendedor(valor) {
+  filtroVendedor = valor || '';
+  renderizar();
+}
+
+function renderSangrias(lista) {
+  const tb = document.getElementById('tb-sangrias');
+  document.getElementById('count-sangrias').textContent =
+    lista.length + (lista.length === 1 ? ' sangria' : ' sangrias');
+
+  if (!lista.length) {
+    mostrarVazio('tb-sangrias', 5, '📭 Nenhuma sangria encontrada para o período.');
+    return;
+  }
+
+  const ordenado = [...lista].sort((a, b) => {
+    const da = normalizarData(a['Data'] || a['data']);
+    const db = normalizarData(b['Data'] || b['data']);
+    const ha = a['Hora'] || a['hora'] || '';
+    const hb = b['Hora'] || b['hora'] || '';
+    return (db + hb).localeCompare(da + ha);
+  });
+
+  tb.innerHTML = ordenado.map(s => {
+    const data   = formatarDataBR(normalizarData(s['Data'] || s['data']));
+    const hora   = formatarHora(s['Hora'] || s['hora'] || '');
+    const valor  = fmtMoeda(s['Valor retirado'] || s['valor'] || 0);
+    const motivo = s['Motivo da sangria'] || s['motivo'] || '—';
+    const resp   = s['Responsável'] || s['responsavel'] || '—';
+
+    return `<tr>
+      <td>${data}</td>
+      <td>${hora}</td>
+      <td class="val-neg">${valor}</td>
+      <td style="max-width:220px;white-space:normal;font-size:12px;color:var(--txt-m)">${motivo}</td>
+      <td>${resp}</td>
+    </tr>`;
+  }).join('');
+}
+
+
+function renderAcertos(lista) {
+  const tb = document.getElementById('tb-acertos');
+  document.getElementById('count-acertos').textContent =
+    lista.length + (lista.length === 1 ? ' acerto' : ' acertos');
+
+  const checkAll = document.getElementById('check-all');
+  if (checkAll) checkAll.checked = false;
+  atualizarSelecao();
+
+  if (!lista.length) {
+    mostrarVazio('tb-acertos', 7, '📭 Nenhum acerto encontrado para o período.');
+    tb._dadosAcertos = [];
+    return;
+  }
+
+  const ordenado = [...lista].sort((a, b) => {
+    const da = normalizarData(getCampo(a, ['Data', 'data']));
+    const db = normalizarData(getCampo(b, ['Data', 'data']));
+    const ha = getCampo(a, ['Hora do acerto', 'hora']) || '';
+    const hb = getCampo(b, ['Hora do acerto', 'hora']) || '';
+    return (db + hb).localeCompare(da + ha);
+  });
+
+  tb.innerHTML = ordenado.map((a, idx) => {
+    const num = getCampo(a, ['Numero da venda', 'Número da venda', 'numero']) || '—';
+    const data = formatarDataBR(normalizarData(getCampo(a, ['Data', 'data'])));
+    const hora = formatarHora(getCampo(a, ['Hora do acerto', 'hora']));
+    const cli = getCampo(a, ['Cliente', 'cliente', 'Nome do cliente', 'nomeCliente']) || '—';
+    const mot = getCampo(a, ['Motorista', 'motorista']) || '—';
+    const total = fmtMoeda(getCampo(a, ['Total recebido', 'total', 'totalRecebido']) || 0);
+    const forma = getCampo(a, ['Pagamento detalhado', 'Forma de pagamento', 'formaPagamento', 'forma']) || '—';
+
+    return `<tr>
+      <td><input type="checkbox" class="acerto-check row-check" data-idx="${idx}" onchange="atualizarSelecao()"></td>
+      <td>${num}</td>
+      <td>${data}<br><span style="font-size:11px;color:var(--txt-m)">${hora}</span></td>
+      <td>${cli}</td>
+      <td>${mot}</td>
+      <td class="val-pos">${total}</td>
+      <td style="max-width:230px;white-space:normal;font-size:12px;color:var(--txt-m)">${forma}</td>
+    </tr>`;
+  }).join('');
+
+  tb._dadosAcertos = ordenado;
+}
+
+
+function normalizarChave(txt) {
+  return String(txt || '')
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, '');
+}
+
+function getCampo(obj, nomes) {
+  for (const nome of nomes) {
+    if (obj[nome] !== undefined && obj[nome] !== null && obj[nome] !== '') return obj[nome];
+  }
+
+  const mapa = {};
+  Object.keys(obj || {}).forEach(chave => {
+    mapa[normalizarChave(chave)] = obj[chave];
+  });
+
+  for (const nome of nomes) {
+    const valor = mapa[normalizarChave(nome)];
+    if (valor !== undefined && valor !== null && valor !== '') return valor;
+  }
+
+  return '';
+}
+
+function montarPagamentoTabela(v) {
+  const partes = [];
+  const dinheiro = valorPagamento(v, 'dinheiro');
+  const pix = valorPagamento(v, 'pix');
+  const credito = valorPagamento(v, 'credito');
+  const debito = valorPagamento(v, 'debito');
+  const boleto = valorPagamento(v, 'boleto');
+  const carteira = valorPagamento(v, 'carteira');
+  const cheque = valorPagamento(v, 'cheque');
+
+  if (dinheiro > 0) partes.push(fmtMoeda(dinheiro) + ' dinheiro');
+  if (pix > 0) partes.push(fmtMoeda(pix) + ' PIX');
+  if (credito > 0) partes.push(fmtMoeda(credito) + ' crédito');
+  if (debito > 0) partes.push(fmtMoeda(debito) + ' débito');
+  if (boleto > 0) partes.push(fmtMoeda(boleto) + ' boleto');
+  if (carteira > 0) partes.push(fmtMoeda(carteira) + ' carteira');
+  if (cheque > 0) partes.push(fmtMoeda(cheque) + ' cheque');
+  if (partes.length) return partes.join(' + ');
+
+  const forma = limparTextoPagamento(getCampo(v, ['Forma de pagamento', 'formaPagamento']));
+  return forma || '—';
+}
+
+function atualizarKPIs(vendas, sangrias, acertos = []) {
+  const periodoLabel = filtroAtual ? 'no período' : 'em todos os registros';
+
+  const totVendas  = vendas.reduce((a, v) => a + numero(v['Total da venda'] || v['total'] || 0), 0);
+  const totSangr   = sangrias.reduce((a, s) => a + numero(s['Valor retirado'] || s['valor'] || 0), 0);
+  const totAcertos = acertos.reduce((a, v) => a + numero(getCampo(v, ['Total recebido', 'total', 'totalRecebido']) || 0), 0);
+
+  const totDinheiro = vendas.reduce((a, v) => a + valorPagamento(v, 'dinheiro'), 0);
+  const totPix      = vendas.reduce((a, v) => a + valorPagamento(v, 'pix'), 0);
+  const totCredito  = vendas.reduce((a, v) => a + valorPagamento(v, 'credito'), 0);
+  const totDebito   = vendas.reduce((a, v) => a + valorPagamento(v, 'debito'), 0);
+  const totBoleto   = vendas.reduce((a, v) => a + valorPagamento(v, 'boleto'), 0);
+  const totCarteira = vendas.reduce((a, v) => a + valorPagamento(v, 'carteira'), 0);
+  const totCheque   = vendas.reduce((a, v) => a + valorPagamento(v, 'cheque'), 0);
+
+  // Para conferência física do caixa, sangria abate somente do dinheiro.
+  const saldoDinheiro = totDinheiro - totSangr;
+
+  const comNotinha = vendas.filter(v => {
+    const n = (v['Notinha'] || v['notinha'] || '').toString().toLowerCase();
+    return n === 'sim' || n === 'true';
+  }).length;
+
+  document.getElementById('kpiTotalVendas').textContent = fmtMoeda(totVendas);
+  document.getElementById('kpiQtdVendas').textContent   = vendas.length + ' venda(s) ' + periodoLabel;
+  document.getElementById('kpiDinheiro').textContent    = fmtMoeda(totDinheiro);
+  document.getElementById('kpiPix').textContent         = fmtMoeda(totPix);
+  document.getElementById('kpiCredito').textContent     = fmtMoeda(totCredito);
+  document.getElementById('kpiDebito').textContent      = fmtMoeda(totDebito);
+  document.getElementById('kpiBoleto').textContent      = fmtMoeda(totBoleto);
+  document.getElementById('kpiCarteira').textContent    = fmtMoeda(totCarteira);
+  document.getElementById('kpiCheque').textContent      = fmtMoeda(totCheque);
+  document.getElementById('kpiNotinha').textContent     = comNotinha;
+  document.getElementById('kpiSemNotinha').textContent  = (vendas.length - comNotinha) + ' sem notinha ' + periodoLabel;
+  document.getElementById('kpiSangrias').textContent    = fmtMoeda(totSangr);
+  document.getElementById('kpiQtdSangrias').textContent = sangrias.length + ' sangria(s) ' + periodoLabel;
+  document.getElementById('kpiAcertos').textContent     = fmtMoeda(totAcertos);
+  document.getElementById('kpiQtdAcertos').textContent  = acertos.length + ' acerto(s) ' + periodoLabel;
+
+  const el = document.getElementById('kpiSaldo');
+  el.textContent = fmtMoeda(saldoDinheiro);
+  el.className   = 'kpi-val ' + (saldoDinheiro >= 0 ? 'green' : 'red');
+}
+
+function valorPagamento(v, tipo) {
+  const mapa = {
+    dinheiro: ['Dinheiro', 'Valor dinheiro', 'valorDinheiro', 'valor_dinheiro', 'dinheiro'],
+    pix:      ['PIX', 'Pix', 'Valor PIX', 'valorPix', 'valor_pix', 'pix'],
+    credito:  ['Cartão de crédito', 'Cartao de credito', 'Crédito', 'Credito', 'Valor crédito', 'valorCredito', 'valor_credito', 'credito'],
+    debito:   ['Cartão de débito', 'Cartao de debito', 'Débito', 'Debito', 'Valor débito', 'valorDebito', 'valor_debito', 'debito'],
+    boleto:   ['Boleto', 'Valor boleto', 'valorBoleto', 'valor_boleto', 'boleto'],
+    carteira: ['Carteira', 'Valor carteira', 'valorCarteira', 'valor_carteira', 'carteira'],
+    cheque:   ['Cheque', 'Valor cheque', 'valorCheque', 'valor_cheque', 'cheque']
+  };
+
+  const possiveis = mapa[tipo] || [];
+  const valor = getCampo(v, possiveis);
+  return numero(valor);
+}
+
+// ────────────────────────────────────────────────────────────
+//  SALVAR VENDA
+// ────────────────────────────────────────────────────────────
+async function salvarVenda() {
+  const numero = document.getElementById('v-numero').value.trim();
+  const data  = document.getElementById('v-data').value;
+  const total = parseValorBR(document.getElementById('v-total').value);
+  const cli   = document.getElementById('v-cliente').value.trim();
+  const vendedor = document.getElementById('v-vendedor').value.trim();
+  const obs   = document.getElementById('v-obs').value.trim();
+  const not   = document.getElementById('v-notinha').checked ? 'Sim' : 'Não';
+  const pagamento = obterPagamentoVenda(total);
+
+  if (!numero) {
+    setMsg('msg-venda', 'Informe o número da venda.', 'err');
+    document.getElementById('v-numero').focus();
+    return;
+  }
+
+  if (!data) {
+    setMsg('msg-venda', 'Informe a data da venda.', 'err');
+    document.getElementById('v-data').focus();
+    return;
+  }
+
+  if (!total || total <= 0) {
+    setMsg('msg-venda', 'Informe o total da venda.', 'err');
+    document.getElementById('v-total').focus();
+    return;
+  }
+
+  if (!vendedor) {
+    setMsg('msg-venda', 'Selecione o vendedor.', 'err');
+    return;
+  }
+
+  if (!cli) {
+    setMsg('msg-venda', 'Informe o nome do cliente.', 'err');
+    document.getElementById('v-cliente').focus();
+    return;
+  }
+
+  if (!pagamento.ok) {
+    setMsg('msg-venda', pagamento.erro, 'err');
+    return;
+  }
+
+  setBtnLoading('btn-salvar-venda', 'ico-venda', true);
+
+  try {
+    const r = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        tipo: 'venda',
+        numero: parseInt(numero, 10),
+        data: formatarDataPlanilha(data),
+        total: total,
+        cliente: cli,
+        nomeCliente: cli,
+        vendedor: vendedor,
+        observacao: obs,
+        notinha: not,
+        formaPagamento: pagamento.formaPagamento,
+        pagamentoDetalhado: pagamento.pagamentoDetalhado,
+        valorDinheiro: pagamento.valorDinheiro,
+        valorPix: pagamento.valorPix,
+        valorCredito: pagamento.valorCredito,
+        valorDebito: pagamento.valorDebito,
+        valorBoleto: pagamento.valorBoleto,
+        valorCarteira: pagamento.valorCarteira,
+        valorCheque: pagamento.valorCheque
+      })
+    });
+    const json = await r.json();
+
+    if (json.ok) {
+      setMsg('msg-venda', `✅ Venda #${json.numero} salva com sucesso!`, 'ok');
+      limparFormVenda();
+      // Pequeno delay para o Sheets confirmar a escrita antes de reler
+      setTimeout(() => carregarDados(), 800);
+    } else {
+      setMsg('msg-venda', '❌ Erro: ' + (json.erro || 'desconhecido'), 'err');
+    }
+  } catch (e) {
+    setMsg('msg-venda', '❌ Falha na conexão. Tente novamente.', 'err');
+  }
+
+  setBtnLoading('btn-salvar-venda', 'ico-venda', false);
+}
+
+// ────────────────────────────────────────────────────────────
+//  SALVAR SANGRIA
+// ────────────────────────────────────────────────────────────
+async function salvarSangria() {
+  const data  = document.getElementById('s-data').value;
+  const hora  = document.getElementById('s-hora').value;
+  const valor = document.getElementById('s-valor').value;
+  const mot   = document.getElementById('s-motivo').value.trim();
+  const resp  = document.getElementById('s-responsavel').value.trim();
+
+  if (!data || !valor || !resp) {
+    setMsg('msg-sangria', 'Preencha data, valor e responsável.', 'err');
+    return;
+  }
+
+  setBtnLoading('btn-salvar-sangria', 'ico-sangria', true);
+
+  try {
+    const r = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        tipo: 'sangria',
+        data: formatarDataPlanilha(data),
+        hora: hora || horaAtual(),
+        valor: parseValorBR(valor),
+        motivo: mot || '—',
+        responsavel: resp
+      })
+    });
+    const json = await r.json();
+
+    if (json.ok) {
+      setMsg('msg-sangria', '✅ Sangria salva com sucesso!', 'ok');
+      limparFormSangria();
+      setTimeout(() => carregarDados(), 800);
+    } else {
+      setMsg('msg-sangria', '❌ Erro: ' + (json.erro || 'desconhecido'), 'err');
+    }
+  } catch (e) {
+    setMsg('msg-sangria', '❌ Falha na conexão. Tente novamente.', 'err');
+  }
+
+  setBtnLoading('btn-salvar-sangria', 'ico-sangria', false);
+}
+
+
+async function salvarAcerto() {
+  const num = document.getElementById('a-numero').value.trim();
+  const data = document.getElementById('a-data').value;
+  const hora = document.getElementById('a-hora').value;
+  const cli = document.getElementById('a-cliente').value.trim();
+  const motorista = document.getElementById('a-motorista').value.trim();
+  const total = parseValorBR(document.getElementById('a-total').value);
+  const obs = document.getElementById('a-obs').value.trim();
+
+  if (!data || !motorista || !total || total <= 0) {
+    setMsg('msg-acerto', 'Preencha data, motorista e total.', 'err');
+    if (!motorista) document.getElementById('a-motorista-aviso').style.display = 'block';
+    return;
+  }
+
+  const pagamento = obterPagamentoAcerto(total);
+
+  setBtnLoading('btn-salvar-acerto', 'ico-acerto', true);
+
+  try {
+    const r = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        tipo: 'acerto',
+        numero: num || '',
+        data: formatarDataPlanilha(data),
+        hora: hora || horaAtual(),
+        cliente: cli || '',
+        motorista: motorista,
+        total: total,
+        observacao: obs,
+        formaPagamento: pagamento.formaPagamento,
+        pagamentoDetalhado: pagamento.pagamentoDetalhado,
+        valorDinheiro: pagamento.valorDinheiro,
+        valorPix: pagamento.valorPix,
+        valorCredito: pagamento.valorCredito,
+        valorDebito: pagamento.valorDebito,
+        valorBoleto: pagamento.valorBoleto,
+        valorCarteira: pagamento.valorCarteira,
+        valorCheque: pagamento.valorCheque,
+        valorComprovante: pagamento.valorComprovante
+      })
+    });
+    const json = await r.json();
+
+    if (json.ok) {
+      setMsg('msg-acerto', '✅ Acerto salvo com sucesso!', 'ok');
+      limparFormAcerto();
+      setTimeout(() => carregarDados(), 800);
+    } else {
+      setMsg('msg-acerto', '❌ Erro: ' + (json.erro || 'desconhecido'), 'err');
+    }
+  } catch (e) {
+    setMsg('msg-acerto', '❌ Falha na conexão. Tente novamente.', 'err');
+  }
+
+  setBtnLoading('btn-salvar-acerto', 'ico-acerto', false);
+}
+
+// ────────────────────────────────────────────────────────────
+//  HELPERS UI
+// ────────────────────────────────────────────────────────────
+
+function selecionarVendedor(nome, el) {
+  document.getElementById('v-vendedor').value = nome;
+  document.querySelectorAll('.seller-btn').forEach(btn => btn.classList.remove('active'));
+  if (el) el.classList.add('active');
+}
+
+function trocarTab(tab, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('panel-' + tab).classList.add('active');
 }
 
 function filtrarHoje() {
@@ -654,437 +1432,225 @@ function filtrarTudo() {
   renderizar();
 }
 
-// ────────────────────────────────────────────────────────────
-//  RENDERIZAR
-// ────────────────────────────────────────────────────────────
-function renderizar() {
-  const vFiltr = filtroAtual
-    ? todosVendas.filter(v => normalizarData(getCampo(v,['Data','data'])) === filtroAtual)
-    : todosVendas;
-  const sFiltr = filtroAtual
-    ? todosSangrias.filter(s => normalizarData(getCampo(s,['Data','data'])) === filtroAtual)
-    : todosSangrias;
-  const aFiltr = filtroAtual
-    ? todosAcertos.filter(a => normalizarData(getCampo(a,['Data','data'])) === filtroAtual)
-    : todosAcertos;
-
-  renderVendas(vFiltr);
-  renderSangrias(sFiltr);
-  renderAcertos(aFiltr);
-  atualizarKPIs(vFiltr, sFiltr, aFiltr);
-}
-
-function renderVendas(lista) {
-  const tb = document.getElementById('tb-vendas');
-  document.getElementById('count-vendas').textContent = '(' + lista.length + ')';
-  if (!lista.length) { mostrarVazio('tb-vendas', 7, '📭 Nenhuma venda no período.'); return; }
-
-  const ord = [...lista].sort((a,b) =>
-    numero(getCampo(b,['Numero da venda','numero'])) - numero(getCampo(a,['Numero da venda','numero']))
-  );
-
-  tb.innerHTML = ord.map(v => {
-    const num     = getCampo(v,['Numero da venda','numero']) || '—';
-    const data    = formatarDataBR(normalizarData(getCampo(v,['Data','data'])));
-    const cli     = getCampo(v,['Nome do cliente','cliente']) || '—';
-    const total   = fmtMoeda(getCampo(v,['Total da venda','total']) || 0);
-    const pag     = montarPagamentoTabela(v);
-    const vend    = getCampo(v,['Vendedor','vendedor']) || '—';
-    const notinha = (getCampo(v,['Notinha','notinha']) || '').toLowerCase() === 'sim' ? '✅' : '—';
-    return `<tr>
-      <td><strong>${num}</strong></td>
-      <td>${data}</td>
-      <td style="max-width:160px">${cli}</td>
-      <td class="val-pos">${total}</td>
-      <td style="font-size:12px;max-width:180px">${pag}</td>
-      <td style="font-size:12px">${vend}</td>
-      <td style="text-align:center">${notinha}</td>
-    </tr>`;
-  }).join('');
-}
-
-function renderSangrias(lista) {
-  const tb = document.getElementById('tb-sangrias');
-  document.getElementById('count-sangrias').textContent = '(' + lista.length + ')';
-  if (!lista.length) { mostrarVazio('tb-sangrias', 5, '📭 Nenhuma sangria no período.'); return; }
-
-  const ord = [...lista].sort((a,b) => {
-    const da = normalizarData(getCampo(a,['Data','data']));
-    const db = normalizarData(getCampo(b,['Data','data']));
-    return db.localeCompare(da);
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('filtroData').addEventListener('change', e => {
+    filtroAtual = e.target.value || null;
+    renderizar();
   });
 
-  tb.innerHTML = ord.map(s => {
-    const data   = formatarDataBR(normalizarData(getCampo(s,['Data','data'])));
-    const hora   = formatarHora(getCampo(s,['Hora','hora']));
-    const valor  = fmtMoeda(getCampo(s,['Valor retirado','valor']) || 0);
-    const motivo = getCampo(s,['Motivo da sangria','motivo']) || '—';
-    const resp   = getCampo(s,['Responsável','responsavel']) || '—';
-    return `<tr>
-      <td>${data}</td>
-      <td>${hora}</td>
-      <td class="val-neg">${valor}</td>
-      <td style="font-size:12px;max-width:220px">${motivo}</td>
-      <td>${resp}</td>
-    </tr>`;
-  }).join('');
-}
-
-function renderAcertos(lista) {
-  const tb = document.getElementById('tb-acertos');
-  document.getElementById('count-acertos').textContent = '(' + lista.length + ')';
-
-  // Desmarca "selecionar todos" ao recarregar
-  const checkAll = document.getElementById('check-all');
-  if (checkAll) checkAll.checked = false;
-  atualizarSelecao();
-
-  if (!lista.length) { mostrarVazio('tb-acertos', 7, '📭 Nenhum acerto no período.'); return; }
-
-  const ord = [...lista].sort((a,b) => {
-    const da = normalizarData(getCampo(a,['Data','data']));
-    const db = normalizarData(getCampo(b,['Data','data']));
-    return db.localeCompare(da);
+  ['v-total', 'v-pag-dinheiro', 'v-pag-pix', 'v-pag-credito', 'v-pag-debito', 'v-pag-boleto', 'v-pag-carteira', 'v-pag-cheque'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', atualizarResumoPagamentoMisto);
   });
+});
 
-  tb.innerHTML = ord.map((a, idx) => {
-    const num   = getCampo(a,['Numero da venda','numero']) || '—';
-    const data  = formatarDataBR(normalizarData(getCampo(a,['Data','data'])));
-    const hora  = formatarHora(getCampo(a,['Hora do acerto','hora']));
-    const cli   = getCampo(a,['Cliente','cliente']) || '—';
-    const mot   = getCampo(a,['Motorista','motorista']) || '—';
-    const total = fmtMoeda(getCampo(a,['Total recebido','total']) || 0);
-    const forma = getCampo(a,['Forma de pagamento','forma']) || '—';
-    const det   = getCampo(a,['Pagamento detalhado']) || '';
-    const obs   = getCampo(a,['Observação','obs']) || '';
-    return `<tr>
-      <td><input type="checkbox" class="acerto-check row-check" data-idx="${idx}" onchange="atualizarSelecao()"></td>
-      <td><strong>${num}</strong></td>
-      <td>${data}<br><small style="color:var(--txt-m)">${hora}</small></td>
-      <td style="max-width:150px">${cli}</td>
-      <td style="font-size:12px">${mot}</td>
-      <td class="val-pos"><strong>${total}</strong></td>
-      <td style="font-size:12px">${forma}</td>
-    </tr>`;
-  }).join('');
-
-  // Guarda referência para impressão
-  tb._dadosAcertos = ord;
-}
-
-function atualizarKPIs(vendas, sangrias, acertos) {
-  const label = filtroAtual ? 'no período' : 'em todos os registros';
-
-  const totVendas   = vendas.reduce((s,v)  => s + numero(getCampo(v,['Total da venda','total']) || 0), 0);
-  const totSangr    = sangrias.reduce((s,sg)=> s + numero(getCampo(sg,['Valor retirado','valor']) || 0), 0);
-  const totAcertos  = acertos.reduce((s,a)  => s + numero(getCampo(a,['Total recebido','total']) || 0), 0);
-  const totDinheiro = vendas.reduce((s,v)  => s + valorPagamento(v,'dinheiro'), 0);
-  const totPix      = vendas.reduce((s,v)  => s + valorPagamento(v,'pix'), 0);
-  const totCredito  = vendas.reduce((s,v)  => s + valorPagamento(v,'credito'), 0);
-  const totDebito   = vendas.reduce((s,v)  => s + valorPagamento(v,'debito'), 0);
-  const totBoleto   = vendas.reduce((s,v)  => s + valorPagamento(v,'boleto'), 0);
-  const totCarteira = vendas.reduce((s,v)  => s + valorPagamento(v,'carteira'), 0);
-  const totCheque   = vendas.reduce((s,v)  => s + valorPagamento(v,'cheque'), 0);
-
-  const saldoDinheiro = totDinheiro - totSangr;
-
-  const comNotinha = vendas.filter(v => {
-    const n = (getCampo(v,['Notinha','notinha']) || '').toString().toLowerCase();
-    return n === 'sim' || n === 'true';
-  }).length;
-
-  document.getElementById('kpiTotalVendas').textContent = fmtMoeda(totVendas);
-  document.getElementById('kpiQtdVendas').textContent   = vendas.length + ' venda(s) ' + label;
-  document.getElementById('kpiDinheiro').textContent    = fmtMoeda(totDinheiro);
-  document.getElementById('kpiPix').textContent         = fmtMoeda(totPix);
-  document.getElementById('kpiCredito').textContent     = fmtMoeda(totCredito);
-  document.getElementById('kpiDebito').textContent      = fmtMoeda(totDebito);
-  document.getElementById('kpiBoleto').textContent      = fmtMoeda(totBoleto);
-  document.getElementById('kpiCarteira').textContent    = fmtMoeda(totCarteira);
-  document.getElementById('kpiCheque').textContent      = fmtMoeda(totCheque);
-  document.getElementById('kpiSangrias').textContent    = fmtMoeda(totSangr);
-  document.getElementById('kpiQtdSangrias').textContent = sangrias.length + ' sangria(s) ' + label;
-  document.getElementById('kpiNotinha').textContent     = comNotinha;
-  document.getElementById('kpiSemNotinha').textContent  = (vendas.length - comNotinha) + ' sem notinha ' + label;
-  document.getElementById('kpiAcertos').textContent     = fmtMoeda(totAcertos);
-  document.getElementById('kpiQtdAcertos').textContent  = acertos.length + ' acerto(s) ' + label;
-
-  const el = document.getElementById('kpiSaldo');
-  el.textContent = fmtMoeda(saldoDinheiro);
-  el.className   = 'kpi-val ' + (saldoDinheiro >= 0 ? 'green' : 'red');
-}
-
-function valorPagamento(v, tipo) {
-  const mapa = {
-    dinheiro: ['Dinheiro','Valor dinheiro','valorDinheiro','dinheiro'],
-    pix:      ['PIX','Pix','Valor PIX','valorPix','pix'],
-    credito:  ['Cartão de crédito','Cartao de credito','Crédito','valorCredito','credito'],
-    debito:   ['Cartão de débito','Cartao de debito','Débito','valorDebito','debito'],
-    boleto:   ['Boleto','Valor boleto','valorBoleto','boleto'],
-    carteira: ['Carteira','Valor carteira','valorCarteira','carteira'],
-    cheque:   ['Cheque','Valor cheque','valorCheque','cheque']
-  };
-  return numero(getCampo(v, mapa[tipo] || []));
-}
-
-function montarPagamentoTabela(v) {
-  const d  = valorPagamento(v,'dinheiro');
-  const px = valorPagamento(v,'pix');
-  const c  = valorPagamento(v,'credito');
-  const db = valorPagamento(v,'debito');
-  const b  = valorPagamento(v,'boleto');
-  const ct = valorPagamento(v,'carteira');
-  const ch = valorPagamento(v,'cheque');
-  const partes = [];
-  if (d>0)  partes.push(fmtMoeda(d)+' dinheiro');
-  if (px>0) partes.push(fmtMoeda(px)+' PIX');
-  if (c>0)  partes.push(fmtMoeda(c)+' crédito');
-  if (db>0) partes.push(fmtMoeda(db)+' débito');
-  if (b>0)  partes.push(fmtMoeda(b)+' boleto');
-  if (ct>0) partes.push(fmtMoeda(ct)+' carteira');
-  if (ch>0) partes.push(fmtMoeda(ch)+' cheque');
-  if (partes.length) return partes.join(' + ');
-  return getCampo(v,['Forma de pagamento','formaPagamento']) || '—';
-}
-
-// ────────────────────────────────────────────────────────────
-//  SALVAR
-// ────────────────────────────────────────────────────────────
-async function salvarVenda() {
-  const num     = document.getElementById('v-numero').value.trim();
-  const data    = document.getElementById('v-data').value;
-  const total   = parseValorBR(document.getElementById('v-total').value);
-  const cli     = document.getElementById('v-cliente').value.trim();
-  const vend    = document.getElementById('v-vendedor').value.trim();
-  const obs     = document.getElementById('v-obs').value.trim();
-  const notinha = document.getElementById('v-notinha').checked ? 'Sim' : 'Não';
-  const tipo    = document.getElementById('v-pagamento').value;
-
-  if (!num) { setMsg('msg-venda','Informe o número da venda.','err'); return; }
-  if (!data || !total) { setMsg('msg-venda','Preencha data e total.','err'); return; }
-
-  const pag = obterPagamentoVenda(tipo, total);
-  setBtnLoading('btn-salvar-venda','ico-venda',true);
-  try {
-    const r = await fetch(SCRIPT_URL, { method:'POST', body: JSON.stringify({
-      tipo:'venda', numero:parseInt(num,10), data:formatarDataPlanilha(data),
-      total, cliente:cli, vendedor:vend, observacao:obs, notinha,
-      formaPagamento:pag.forma, pagamentoDetalhado:pag.detalhado,
-      valorDinheiro:pag.dinheiro, valorPix:pag.pix, valorCredito:pag.credito,
-      valorDebito:pag.debito, valorBoleto:pag.boleto, valorCarteira:pag.carteira, valorCheque:pag.cheque
-    })});
-    const j = await r.json();
-    if (j.ok) { setMsg('msg-venda',`✅ Venda #${j.numero} salva!`,'ok'); limparFormVenda(); setTimeout(carregarDados,700); }
-    else       { setMsg('msg-venda','❌ Erro: '+(j.erro||'desconhecido'),'err'); }
-  } catch(e) { setMsg('msg-venda','❌ Falha na conexão.','err'); }
-  setBtnLoading('btn-salvar-venda','ico-venda',false);
-}
-
-async function salvarSangria() {
-  const data  = document.getElementById('s-data').value;
-  const hora  = document.getElementById('s-hora').value;
-  const valor = parseValorBR(document.getElementById('s-valor').value);
-  const mot   = document.getElementById('s-motivo').value.trim();
-  const resp  = document.getElementById('s-responsavel').value.trim();
-
-  if (!data || !valor || !resp) { setMsg('msg-sangria','Preencha data, valor e responsável.','err'); return; }
-  setBtnLoading('btn-salvar-sangria','ico-sangria',true);
-  try {
-    const r = await fetch(SCRIPT_URL, { method:'POST', body: JSON.stringify({
-      tipo:'sangria', data:formatarDataPlanilha(data), hora:hora||horaAtual(),
-      valor, motivo:mot||'—', responsavel:resp
-    })});
-    const j = await r.json();
-    if (j.ok) { setMsg('msg-sangria','✅ Sangria salva!','ok'); limparFormSangria(); setTimeout(carregarDados,700); }
-    else       { setMsg('msg-sangria','❌ Erro: '+(j.erro||'desconhecido'),'err'); }
-  } catch(e) { setMsg('msg-sangria','❌ Falha na conexão.','err'); }
-  setBtnLoading('btn-salvar-sangria','ico-sangria',false);
-}
-
-async function salvarAcerto() {
-  const num    = document.getElementById('a-numero').value.trim();
-  const data   = document.getElementById('a-data').value;
-  const hora   = document.getElementById('a-hora').value;
-  const cli    = document.getElementById('a-cliente').value.trim();
-  const mot    = document.getElementById('a-motorista').value.trim();
-  const total  = parseValorBR(document.getElementById('a-total').value);
-  const obs    = document.getElementById('a-obs').value.trim();
-
-  if (!data || !mot || !total) {
-    setMsg('msg-acerto','Preencha data, motorista e total.','err');
-    if (!mot) document.getElementById('a-motorista-aviso').style.display = 'block';
-    return;
-  }
-
-  const pag = obterPagamentoAcerto(total);
-  setBtnLoading('btn-salvar-acerto','ico-acerto',true);
-  try {
-    const r = await fetch(SCRIPT_URL, { method:'POST', body: JSON.stringify({
-      tipo:'acerto', numero:num||'', data:formatarDataPlanilha(data), hora:hora||horaAtual(),
-      cliente:cli||'', motorista:mot, total, observacao:obs,
-      formaPagamento:pag.forma, pagamentoDetalhado:pag.detalhado,
-      valorDinheiro:pag.dinheiro, valorPix:pag.pix, valorCredito:pag.credito,
-      valorDebito:pag.debito, valorBoleto:pag.boleto, valorCarteira:pag.carteira,
-      valorCheque:pag.cheque, valorComprovante:pag.comprovante
-    })});
-    const j = await r.json();
-    if (j.ok) { setMsg('msg-acerto','✅ Acerto salvo!','ok'); limparFormAcerto(); setTimeout(carregarDados,700); }
-    else       { setMsg('msg-acerto','❌ Erro: '+(j.erro||'desconhecido'),'err'); }
-  } catch(e) { setMsg('msg-acerto','❌ Falha na conexão.','err'); }
-  setBtnLoading('btn-salvar-acerto','ico-acerto',false);
-}
-
-// ────────────────────────────────────────────────────────────
-//  PAGAMENTO HELPERS
-// ────────────────────────────────────────────────────────────
-function obterPagamentoVenda(tipo, total) {
-  if (tipo === 'misto') {
-    const d  = parseValorBR(document.getElementById('v-pag-dinheiro').value);
-    const px = parseValorBR(document.getElementById('v-pag-pix').value);
-    const c  = parseValorBR(document.getElementById('v-pag-credito').value);
-    const db = parseValorBR(document.getElementById('v-pag-debito').value);
-    const b  = parseValorBR(document.getElementById('v-pag-boleto').value);
-    const ct = parseValorBR(document.getElementById('v-pag-carteira').value);
-    const ch = parseValorBR(document.getElementById('v-pag-cheque').value);
-    const pts = [];
-    if (d>0)  pts.push(fmtMoeda(d)+' dinheiro');
-    if (px>0) pts.push(fmtMoeda(px)+' PIX');
-    if (c>0)  pts.push(fmtMoeda(c)+' crédito');
-    if (db>0) pts.push(fmtMoeda(db)+' débito');
-    if (b>0)  pts.push(fmtMoeda(b)+' boleto');
-    if (ct>0) pts.push(fmtMoeda(ct)+' carteira');
-    if (ch>0) pts.push(fmtMoeda(ch)+' cheque');
-    return { forma:'Pagamento misto', detalhado:pts.join(' + '), dinheiro:d, pix:px, credito:c, debito:db, boleto:b, carteira:ct, cheque:ch };
-  }
-  const mapForma = { 'Dinheiro':'Dinheiro','PIX':'PIX','Cartão de crédito':'Cartão de crédito','Cartão de débito':'Cartão de débito','Boleto':'Boleto','Carteira':'Carteira','Cheque':'Cheque' };
-  return {
-    forma: mapForma[tipo] || tipo,
-    detalhado: fmtMoeda(total) + ' em ' + (mapForma[tipo]||tipo).toLowerCase(),
-    dinheiro: tipo==='Dinheiro'?total:0, pix:tipo==='PIX'?total:0,
-    credito: tipo==='Cartão de crédito'?total:0, debito:tipo==='Cartão de débito'?total:0,
-    boleto: tipo==='Boleto'?total:0, carteira:tipo==='Carteira'?total:0, cheque:tipo==='Cheque'?total:0
-  };
-}
 
 function obterPagamentoAcerto(total) {
-  const d  = parseValorBR(document.getElementById('a-pag-dinheiro').value);
-  const px = parseValorBR(document.getElementById('a-pag-pix').value);
-  const c  = parseValorBR(document.getElementById('a-pag-credito').value);
-  const db = parseValorBR(document.getElementById('a-pag-debito').value);
-  const b  = parseValorBR(document.getElementById('a-pag-boleto').value);
-  const ct = parseValorBR(document.getElementById('a-pag-carteira').value);
-  const ch = parseValorBR(document.getElementById('a-pag-cheque').value);
-  const cm = parseValorBR(document.getElementById('a-pag-comprovante').value);
+  const valorDinheiro = parseValorBR(document.getElementById('a-pag-dinheiro').value);
+  const valorPix = parseValorBR(document.getElementById('a-pag-pix').value);
+  const valorCredito = parseValorBR(document.getElementById('a-pag-credito').value);
+  const valorDebito = parseValorBR(document.getElementById('a-pag-debito').value);
+  const valorBoleto = parseValorBR(document.getElementById('a-pag-boleto').value);
+  const valorCarteira = parseValorBR(document.getElementById('a-pag-carteira').value);
+  const valorCheque = parseValorBR(document.getElementById('a-pag-cheque').value);
+  const valorComprovante = parseValorBR(document.getElementById('a-pag-comprovante').value);
+
   const formas = [];
-  if (d>0)  formas.push('Dinheiro');
-  if (px>0) formas.push('PIX');
-  if (c>0)  formas.push('Cartão crédito');
-  if (db>0) formas.push('Cartão débito');
-  if (b>0)  formas.push('Boleto');
-  if (ct>0) formas.push('Carteira');
-  if (ch>0) formas.push('Cheque');
-  if (cm>0) formas.push('Comprovante máquina');
-  const pts = [];
-  if (d>0)  pts.push(fmtMoeda(d)+' dinheiro');
-  if (px>0) pts.push(fmtMoeda(px)+' PIX');
-  if (c>0)  pts.push(fmtMoeda(c)+' crédito');
-  if (db>0) pts.push(fmtMoeda(db)+' débito');
-  if (b>0)  pts.push(fmtMoeda(b)+' boleto');
-  if (ct>0) pts.push(fmtMoeda(ct)+' carteira');
-  if (ch>0) pts.push(fmtMoeda(ch)+' cheque');
-  if (cm>0) pts.push(fmtMoeda(cm)+' máquina');
+  const partes = [];
+  if (valorDinheiro > 0) { formas.push('Dinheiro'); partes.push(fmtMoeda(valorDinheiro) + ' dinheiro'); }
+  if (valorPix > 0) { formas.push('PIX'); partes.push(fmtMoeda(valorPix) + ' PIX'); }
+  if (valorCredito > 0) { formas.push('Cartão de crédito'); partes.push(fmtMoeda(valorCredito) + ' cartão crédito'); }
+  if (valorDebito > 0) { formas.push('Cartão de débito'); partes.push(fmtMoeda(valorDebito) + ' cartão débito'); }
+  if (valorBoleto > 0) { formas.push('Boleto'); partes.push(fmtMoeda(valorBoleto) + ' boleto'); }
+  if (valorCarteira > 0) { formas.push('Carteira'); partes.push(fmtMoeda(valorCarteira) + ' carteira'); }
+  if (valorCheque > 0) { formas.push('Cheque'); partes.push(fmtMoeda(valorCheque) + ' cheque'); }
+  if (valorComprovante > 0) { formas.push('Comprovante de máquina'); partes.push(fmtMoeda(valorComprovante) + ' comprovante máquina'); }
+
   return {
-    forma: formas.length===0?'—':formas.length===1?formas[0]:'Pagamento misto',
-    detalhado: pts.join(' + ')||'—',
-    dinheiro:d, pix:px, credito:c, debito:db, boleto:b, carteira:ct, cheque:ch, comprovante:cm
+    formaPagamento: formas.length === 0 ? '—' : (formas.length === 1 ? formas[0] : 'Pagamento misto'),
+    pagamentoDetalhado: partes.join(' + ') || '—',
+    valorDinheiro,
+    valorPix,
+    valorCredito,
+    valorDebito,
+    valorBoleto,
+    valorCarteira,
+    valorCheque,
+    valorComprovante
   };
-}
-
-function togglePagamentoMisto() {
-  const v = document.getElementById('v-pagamento').value === 'misto';
-  document.getElementById('pagamento-misto').classList.toggle('active', v);
-}
-
-function atualizarResumoMisto() {
-  const total = parseValorBR(document.getElementById('v-total').value);
-  const soma  = ['v-pag-dinheiro','v-pag-pix','v-pag-credito','v-pag-debito','v-pag-boleto','v-pag-carteira','v-pag-cheque']
-                .reduce((s,id) => s + parseValorBR(document.getElementById(id).value), 0);
-  document.getElementById('resumo-misto').textContent = total > 0
-    ? `${fmtMoeda(soma)} | Diferença: ${fmtMoeda(total-soma)}`
-    : '—';
 }
 
 function atualizarResumoAcerto() {
   const total = parseValorBR(document.getElementById('a-total').value);
-  const soma  = ['a-pag-dinheiro','a-pag-pix','a-pag-credito','a-pag-debito','a-pag-boleto','a-pag-carteira','a-pag-cheque','a-pag-comprovante']
-                .reduce((s,id) => s + parseValorBR(document.getElementById(id).value), 0);
+  const soma = [
+    'a-pag-dinheiro', 'a-pag-pix', 'a-pag-credito', 'a-pag-debito',
+    'a-pag-boleto', 'a-pag-carteira', 'a-pag-cheque', 'a-pag-comprovante'
+  ].reduce((acc, id) => acc + parseValorBR(document.getElementById(id).value), 0);
   document.getElementById('resumo-acerto').textContent = total > 0
-    ? `${fmtMoeda(soma)} | Diferença: ${fmtMoeda(total-soma)}`
+    ? `Informado: ${fmtMoeda(soma)} | Diferença: ${fmtMoeda(total - soma)}`
     : 'Informe o total e as formas de pagamento';
 }
 
-function selecionarVendedor(nome, el) {
-  document.getElementById('v-vendedor').value = nome;
-  document.querySelectorAll('.seller-btn').forEach(b => b.classList.remove('active'));
-  if (el) el.classList.add('active');
+
+function togglePagamentoMisto() {
+  const forma = document.getElementById('v-pagamento')?.value;
+  const box = document.getElementById('pagamento-misto-box');
+  if (!box) return;
+  box.classList.toggle('active', forma === 'misto');
+  atualizarResumoPagamentoMisto();
 }
 
-function trocarTab(tab, el) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('panel-'+tab).classList.add('active');
+function preencherRestantePix() {
+  const total = parseValorBR(document.getElementById('v-total').value);
+  const dinheiro = parseValorBR(document.getElementById('v-pag-dinheiro').value);
+  const credito = parseValorBR(document.getElementById('v-pag-credito').value);
+  const debito = parseValorBR(document.getElementById('v-pag-debito').value);
+  const boleto = parseValorBR(document.getElementById('v-pag-boleto').value);
+  const carteira = parseValorBR(document.getElementById('v-pag-carteira').value);
+  const cheque = parseValorBR(document.getElementById('v-pag-cheque').value);
+  const restante = Math.max(0, total - dinheiro - credito - debito - boleto - carteira - cheque);
+  document.getElementById('v-pag-pix').value = restante.toFixed(2);
+  atualizarResumoPagamentoMisto();
 }
 
-// ────────────────────────────────────────────────────────────
-//  LIMPAR FORMS
-// ────────────────────────────────────────────────────────────
+function obterPagamentoVenda(totalVenda) {
+  const forma = document.getElementById('v-pagamento').value;
+  const nomes = {
+    dinheiro: 'Dinheiro',
+    pix: 'PIX',
+    credito: 'Cartão de crédito',
+    debito: 'Cartão de débito',
+    misto: 'Pagamento misto'
+  };
+
+  if (forma !== 'misto') {
+    return {
+      ok: true,
+      formaPagamento: nomes[forma] || forma,
+      pagamentoDetalhado: nomes[forma] || forma,
+      valorDinheiro: forma === 'dinheiro' ? totalVenda : 0,
+      valorPix: forma === 'pix' ? totalVenda : 0,
+      valorCredito: forma === 'credito' ? totalVenda : 0,
+      valorDebito: forma === 'debito' ? totalVenda : 0,
+      valorBoleto: forma === 'boleto' ? totalVenda : 0,
+      valorCarteira: forma === 'carteira' ? totalVenda : 0,
+      valorCheque: forma === 'cheque' ? totalVenda : 0
+    };
+  }
+
+  const valorDinheiro = parseValorBR(document.getElementById('v-pag-dinheiro').value);
+  const valorPix = parseValorBR(document.getElementById('v-pag-pix').value);
+  const valorCredito = parseValorBR(document.getElementById('v-pag-credito').value);
+  const valorDebito = parseValorBR(document.getElementById('v-pag-debito').value);
+  const valorBoleto = parseValorBR(document.getElementById('v-pag-boleto').value);
+  const valorCarteira = parseValorBR(document.getElementById('v-pag-carteira').value);
+  const valorCheque = parseValorBR(document.getElementById('v-pag-cheque').value);
+  const soma = valorDinheiro + valorPix + valorCredito + valorDebito + valorBoleto + valorCarteira + valorCheque;
+
+  if (soma <= 0) {
+    return { ok: false, erro: 'Informe ao menos um valor no pagamento misto.' };
+  }
+
+  if (Math.abs(soma - totalVenda) > 0.009) {
+    return { ok: false, erro: `A soma das formas de pagamento (${fmtMoeda(soma)}) precisa bater com o total da venda (${fmtMoeda(totalVenda)}).` };
+  }
+
+  const partes = [];
+  if (valorDinheiro > 0) partes.push(`${fmtMoeda(valorDinheiro)} dinheiro`);
+  if (valorPix > 0) partes.push(`${fmtMoeda(valorPix)} PIX`);
+  if (valorCredito > 0) partes.push(`${fmtMoeda(valorCredito)} cartão crédito`);
+  if (valorDebito > 0) partes.push(`${fmtMoeda(valorDebito)} cartão débito`);
+  if (valorBoleto > 0) partes.push(`${fmtMoeda(valorBoleto)} boleto`);
+  if (valorCarteira > 0) partes.push(`${fmtMoeda(valorCarteira)} carteira`);
+  if (valorCheque > 0) partes.push(`${fmtMoeda(valorCheque)} cheque`);
+
+  return {
+    ok: true,
+    formaPagamento: 'Pagamento misto',
+    pagamentoDetalhado: partes.join(' + '),
+    valorDinheiro,
+    valorPix,
+    valorCredito,
+    valorDebito,
+    valorBoleto,
+    valorCarteira,
+    valorCheque
+  };
+}
+
+function atualizarResumoPagamentoMisto() {
+  const resumo = document.getElementById('pagamento-misto-resumo');
+  if (!resumo) return;
+  const total = parseValorBR(document.getElementById('v-total').value);
+  const dinheiro = parseValorBR(document.getElementById('v-pag-dinheiro').value);
+  const pix = parseValorBR(document.getElementById('v-pag-pix').value);
+  const credito = parseValorBR(document.getElementById('v-pag-credito').value);
+  const debito = parseValorBR(document.getElementById('v-pag-debito').value);
+  const boleto = parseValorBR(document.getElementById('v-pag-boleto').value);
+  const carteira = parseValorBR(document.getElementById('v-pag-carteira').value);
+  const cheque = parseValorBR(document.getElementById('v-pag-cheque').value);
+  const soma = dinheiro + pix + credito + debito + boleto + carteira + cheque;
+  const diferenca = total - soma;
+  resumo.textContent = total > 0
+    ? `Informado: ${fmtMoeda(soma)} | Diferença: ${fmtMoeda(diferenca)}`
+    : 'Ex.: informe R$ 200,00 em dinheiro e clique para jogar o restante no PIX, ou detalhe entre as formas disponíveis.';
+}
+
 function limparFormVenda() {
-  ['v-numero','v-total','v-cliente','v-obs'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('v-data').value      = hojeStr();
+  document.getElementById('v-numero').value = '';
+  document.getElementById('v-total').value = '';
+  document.getElementById('v-cliente').value = '';
+  document.getElementById('v-obs').value = '';
   document.getElementById('v-notinha').checked = false;
-  document.getElementById('v-vendedor').value  = '';
-  document.getElementById('v-pagamento').value = 'Dinheiro';
-  document.querySelectorAll('.seller-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('v-vendedor').value = '';
+  document.querySelectorAll('.seller-btn').forEach(btn => btn.classList.remove('active'));
+  document.getElementById('v-pagamento').value = 'dinheiro';
+  document.getElementById('v-pag-dinheiro').value = '';
+  document.getElementById('v-pag-pix').value = '';
+  document.getElementById('v-pag-credito').value = '';
+  document.getElementById('v-pag-debito').value = '';
+  document.getElementById('v-pag-boleto').value = '';
+  document.getElementById('v-pag-carteira').value = '';
+  document.getElementById('v-pag-cheque').value = '';
+  document.getElementById('v-data').value = hojeStr();
   togglePagamentoMisto();
-  ['v-pag-dinheiro','v-pag-pix','v-pag-credito','v-pag-debito','v-pag-boleto','v-pag-carteira','v-pag-cheque']
-    .forEach(id => document.getElementById(id).value = '');
-  document.getElementById('resumo-misto').textContent = '—';
 }
 
 function limparFormSangria() {
-  document.getElementById('s-valor').value      = '';
-  document.getElementById('s-motivo').value     = '';
+  document.getElementById('s-valor').value = '';
+  document.getElementById('s-motivo').value = '';
   document.getElementById('s-responsavel').value = '';
-  document.getElementById('s-data').value       = hojeStr();
-  document.getElementById('s-hora').value       = horaAtual();
+  document.getElementById('s-data').value = hojeStr();
+  document.getElementById('s-hora').value = horaAtual();
 }
 
+
 function limparFormAcerto() {
-  ['a-numero','a-total','a-cliente','a-obs'].forEach(id => document.getElementById(id).value = '');
+  ['a-numero', 'a-total', 'a-cliente', 'a-obs'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('a-motorista').value = '';
   document.getElementById('a-motorista-aviso').style.display = 'none';
-  document.querySelectorAll('#motorista-btns .seller-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('#motorista-btns .seller-btn').forEach(btn => btn.classList.remove('active'));
   document.getElementById('a-data').value = hojeStr();
   document.getElementById('a-hora').value = horaAtual();
-  ['a-pag-dinheiro','a-pag-pix','a-pag-credito','a-pag-debito','a-pag-boleto','a-pag-carteira','a-pag-cheque','a-pag-comprovante']
-    .forEach(id => document.getElementById(id).value = '');
+  [
+    'a-pag-dinheiro', 'a-pag-pix', 'a-pag-credito', 'a-pag-debito',
+    'a-pag-boleto', 'a-pag-carteira', 'a-pag-cheque', 'a-pag-comprovante'
+  ].forEach(id => document.getElementById(id).value = '');
   document.getElementById('resumo-acerto').textContent = 'Informe o total e as formas de pagamento';
 }
 
-// ────────────────────────────────────────────────────────────
-//  UI HELPERS
-// ────────────────────────────────────────────────────────────
-function setMsg(id, txt, tipo) {
+function setMsg(id, texto, tipo) {
   const el = document.getElementById(id);
-  el.textContent = txt;
+  el.textContent = texto;
   el.className = 'form-msg ' + tipo;
   setTimeout(() => { el.textContent = ''; el.className = 'form-msg'; }, 5000);
 }
 
 function setBtnLoading(btnId, icoId, loading) {
-  document.getElementById(btnId).disabled = loading;
-  document.getElementById(icoId).innerHTML = loading ? '<span class="spinner"></span>' : '💾';
+  const btn = document.getElementById(btnId);
+  const ico = document.getElementById(icoId);
+  btn.disabled = loading;
+  ico.innerHTML = loading ? '<span class="spinner"></span>' : '💾';
 }
 
 function mostrarVazio(tbId, cols, msg) {
@@ -1093,108 +1659,171 @@ function mostrarVazio(tbId, cols, msg) {
 }
 
 // ────────────────────────────────────────────────────────────
-//  UTILS
+//  HELPERS DE DATA / FORMATAÇÃO
 // ────────────────────────────────────────────────────────────
-function getCampo(obj, nomes) {
-  for (const n of nomes) {
-    if (obj[n] !== undefined && obj[n] !== null && obj[n] !== '') return obj[n];
-  }
-  const mapa = {};
-  Object.keys(obj||{}).forEach(k => { mapa[norm(k)] = obj[k]; });
-  for (const n of nomes) {
-    const v = mapa[norm(n)];
-    if (v !== undefined && v !== null && v !== '') return v;
-  }
-  return '';
-}
-
-function norm(txt) {
-  return String(txt||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,'');
-}
-
 function hojeStr() {
   const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const dia = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${dia}`;
 }
 
-function horaAtual() { return new Date().toTimeString().slice(0,5); }
-
-function formatarDataBR(s) {
-  if (!s||s.length<10) return s||'—';
-  const [y,m,d] = s.split('-');
-  return `${d}/${m}/${y}`;
+function horaAtual() {
+  return new Date().toTimeString().slice(0, 5);   // HH:MM
 }
 
-function formatarDataPlanilha(s) {
-  if (!s) return '';
-  const [y,m,d] = s.split('-');
-  return `${d}/${m}/${y}`;
+
+function formatarHora(val) {
+  if (val === null || val === undefined || val === '') return '—';
+
+  const s = String(val).trim();
+
+  // Se já vier como HH:MM ou HH:MM:SS, mantém exatamente o horário informado.
+  const horaDireta = s.match(/^(\d{1,2}):(\d{2})(?::\d{2})?$/);
+  if (horaDireta) {
+    return `${horaDireta[1].padStart(2, '0')}:${horaDireta[2]}`;
+  }
+
+  // Quando o Google Sheets devolve horário puro como data antiga, exemplo:
+  // 1899-12-30T18:06:28.000Z.
+  // Esse horário vem deslocado por causa do fuso histórico de São Paulo em 1899.
+  // Para exibir o mesmo horário lançado na planilha, subtraímos 3h06.
+  if (/^1899-12-30T/.test(s)) {
+    const m = s.match(/T(\d{2}):(\d{2})/);
+    if (m) {
+      let totalMin = (parseInt(m[1], 10) * 60) + parseInt(m[2], 10) - 186;
+      totalMin = ((totalMin % 1440) + 1440) % 1440;
+      const h = Math.floor(totalMin / 60);
+      const min = totalMin % 60;
+      return `${String(h).padStart(2, '0')}:${String(min).padStart(2, '0')}`;
+    }
+  }
+
+  // Outros ISO com data real: usa horário local do navegador.
+  if (/^\d{4}-\d{2}-\d{2}T/.test(s)) {
+    const dt = new Date(s);
+    if (!isNaN(dt)) {
+      return `${String(dt.getHours()).padStart(2, '0')}:${String(dt.getMinutes()).padStart(2, '0')}`;
+    }
+  }
+
+  const dt = new Date(s);
+  if (!isNaN(dt)) {
+    return `${String(dt.getHours()).padStart(2, '0')}:${String(dt.getMinutes()).padStart(2, '0')}`;
+  }
+
+  return s;
+}
+
+function formatarDataPlanilha(yyyy_mm_dd) {
+  // input[type=date] sempre retorna "YYYY-MM-DD"
+  if (!yyyy_mm_dd) return '';
+  const parts = yyyy_mm_dd.split('-');
+  if (parts.length !== 3) return yyyy_mm_dd;
+  const y   = parseInt(parts[0], 10);
+  const m   = parseInt(parts[1], 10);
+  const d   = parseInt(parts[2], 10);
+  return `${String(d).padStart(2,'0')}/${String(m).padStart(2,'0')}/${y}`;
 }
 
 function normalizarData(val) {
+  // Normaliza para YYYY-MM-DD independente do formato
   if (!val) return '';
   const s = val.toString().trim();
-  if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.slice(0,10);
-  if (/^\d{2}\/\d{2}\/\d{4}/.test(s)) { const [d,m,y]=s.split('/'); return `${y}-${m}-${d}`; }
+  if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.slice(0, 10);
+  if (/^\d{2}\/\d{2}\/\d{4}/.test(s)) {
+    const [d, m, y] = s.split('/');
+    return `${y}-${m}-${d}`;
+  }
+  // Objeto Date do Sheets (serializado como string)
   const dt = new Date(s);
   if (!isNaN(dt)) return dt.toISOString().split('T')[0];
   return s;
 }
 
-function formatarHora(val) {
-  if (!val) return '—';
-  const s = String(val).trim();
-  const m = s.match(/^(\d{1,2}):(\d{2})/);
-  if (m) return `${m[1].padStart(2,'0')}:${m[2]}`;
-  if (/^1899-12-30T/.test(s)) {
-    const mx = s.match(/T(\d{2}):(\d{2})/);
-    if (mx) {
-      let t = (parseInt(mx[1])*60+parseInt(mx[2]))-186;
-      t = ((t%1440)+1440)%1440;
-      return `${String(Math.floor(t/60)).padStart(2,'0')}:${String(t%60).padStart(2,'0')}`;
-    }
-  }
-  return s;
+function formatarDataBR(yyyy_mm_dd) {
+  if (!yyyy_mm_dd || yyyy_mm_dd.length < 10) return yyyy_mm_dd || '—';
+  const [y, m, d] = yyyy_mm_dd.split('-');
+  return `${d}/${m}/${y}`;
 }
 
 function parseValorBR(val) {
-  if (!val) return 0;
-  if (typeof val === 'number') return isFinite(val)?val:0;
-  let s = String(val).trim().replace(/\s/g,'').replace('R$','').replace(/[^0-9,.-]/g,'');
-  if (!s) return 0;
-  if (s.includes(',')&&s.includes('.')) {
-    s = s.lastIndexOf(',')>s.lastIndexOf('.') ? s.replace(/\./g,'').replace(',','.') : s.replace(/,/g,'');
-  } else if (s.includes(',')) {
-    s = s.replace(/\./g,'').replace(',','.');
+  if (val === null || val === undefined || val === '') return 0;
+
+  // Quando vem do Google Sheets como número, preserve o decimal.
+  // Ex.: 25.5 deve continuar 25.5, e não virar 255.
+  if (typeof val === 'number') {
+    return Number.isFinite(val) ? val : 0;
   }
+
+  let s = String(val)
+    .trim()
+    .replace(/\s/g, '')
+    .replace('R$', '')
+    .replace(/[^0-9,.-]/g, '');
+
+  if (!s) return 0;
+
+  const temVirgula = s.includes(',');
+  const temPonto = s.includes('.');
+
+  if (temVirgula && temPonto) {
+    // Usa o último separador como decimal.
+    // Ex.: 1.234,56 => 1234.56 | 1,234.56 => 1234.56
+    if (s.lastIndexOf(',') > s.lastIndexOf('.')) {
+      s = s.replace(/\./g, '').replace(',', '.');
+    } else {
+      s = s.replace(/,/g, '');
+    }
+  } else if (temVirgula) {
+    // Padrão brasileiro: 25,50 => 25.50
+    s = s.replace(/\./g, '').replace(',', '.');
+  } else if (temPonto) {
+    // Padrão do input/Sheets: 25.50 => 25.50
+    // Se houver mais de um ponto, considera os anteriores como milhar.
+    const partes = s.split('.');
+    if (partes.length > 2) {
+      const decimal = partes.pop();
+      s = partes.join('') + '.' + decimal;
+    }
+  }
+
   const n = Number(s);
-  return isFinite(n)?n:0;
+  return Number.isFinite(n) ? n : 0;
 }
 
-function numero(val) { return parseValorBR(val); }
+function numero(val) {
+  return parseValorBR(val);
+}
 
 function fmtMoeda(val) {
-  return parseValorBR(val).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+  const n = parseValorBR(val);
+  return n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 }
 
-// ────────────────────────────────────────────────────────────
-//  MOTORISTAS — cadastro rápido via localStorage
-// ────────────────────────────────────────────────────────────
 const MOTORISTAS_KEY = 'EA_MOTORISTAS';
 
 function carregarMotoristas() {
   try {
     return JSON.parse(localStorage.getItem(MOTORISTAS_KEY)) || [];
-  } catch(e) { return []; }
+  } catch (e) {
+    return [];
+  }
 }
 
 function salvarMotoristasLS(lista) {
   localStorage.setItem(MOTORISTAS_KEY, JSON.stringify(lista));
 }
 
+function literalJS(valor) {
+  return JSON.stringify(String(valor || ''));
+}
+
 function renderBotoesMotorista() {
   const lista = carregarMotoristas();
   const container = document.getElementById('motorista-btns');
+  if (!container) return;
   if (!lista.length) {
     container.innerHTML = `<div style="grid-column:1/-1;font-size:12px;color:var(--txt-m);padding:8px 0">
       Nenhum motorista cadastrado. Clique em <strong>✏️ Editar lista</strong> para adicionar.
@@ -1202,13 +1831,13 @@ function renderBotoesMotorista() {
     return;
   }
   container.innerHTML = lista.map(nome =>
-    `<button class="seller-btn" onclick="selecionarMotorista('${nome.replace(/'/g,"\\'")}', this)">🚗 ${nome}</button>`
+    `<button type="button" class="seller-btn" onclick="selecionarMotorista(${literalJS(nome)}, this)">🚗 ${nome}</button>`
   ).join('');
 }
 
 function selecionarMotorista(nome, el) {
   document.getElementById('a-motorista').value = nome;
-  document.querySelectorAll('#motorista-btns .seller-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('#motorista-btns .seller-btn').forEach(btn => btn.classList.remove('active'));
   if (el) el.classList.add('active');
   document.getElementById('a-motorista-aviso').style.display = 'none';
 }
@@ -1222,11 +1851,10 @@ function abrirGestaoMotoristas() {
 function fecharGestaoMotoristas() {
   document.getElementById('modalMotoristas').classList.remove('active');
   renderBotoesMotorista();
-  // Mantém seleção se o motorista ainda existir
   const atual = document.getElementById('a-motorista').value;
   if (atual) {
-    document.querySelectorAll('#motorista-btns .seller-btn').forEach(b => {
-      if (b.textContent.trim() === '🚗 ' + atual) b.classList.add('active');
+    document.querySelectorAll('#motorista-btns .seller-btn').forEach(btn => {
+      if (btn.textContent.trim() === '🚗 ' + atual) btn.classList.add('active');
     });
   }
 }
@@ -1267,12 +1895,9 @@ function removerMotorista(idx) {
   const lista = carregarMotoristas();
   lista.splice(idx, 1);
   salvarMotoristasLS(lista);
-  // Limpa seleção se era o removido
   renderListaModal();
 }
 
-// ────────────────────────────────────────────────────────────
-// ────────────────────────────────────────────────────────────
 function toggleTodos(masterCb) {
   document.querySelectorAll('.row-check').forEach(cb => cb.checked = masterCb.checked);
   atualizarSelecao();
@@ -1280,28 +1905,28 @@ function toggleTodos(masterCb) {
 
 function atualizarSelecao() {
   const checks = document.querySelectorAll('.row-check');
-  const total  = checks.length;
-  const qtd    = [...checks].filter(c => c.checked).length;
-
-  const btn     = document.getElementById('btn-print');
+  const total = checks.length;
+  const qtd = [...checks].filter(c => c.checked).length;
+  const btn = document.getElementById('btn-print');
   const counter = document.getElementById('print-bar-count');
+  if (!btn || !counter) return;
 
   if (qtd > 0) {
     btn.disabled = false;
-    btn.style.opacity  = '1';
-    btn.style.cursor   = 'pointer';
+    btn.style.opacity = '1';
+    btn.style.cursor = 'pointer';
     counter.style.display = 'inline';
-    counter.textContent   = qtd + (qtd === 1 ? ' selecionado' : ' selecionados');
+    counter.textContent = qtd + (qtd === 1 ? ' selecionado' : ' selecionados');
   } else {
     btn.disabled = true;
-    btn.style.opacity  = '.4';
-    btn.style.cursor   = 'not-allowed';
+    btn.style.opacity = '.4';
+    btn.style.cursor = 'not-allowed';
     counter.style.display = 'none';
   }
 
   const master = document.getElementById('check-all');
   if (master) {
-    master.checked       = qtd === total && total > 0;
+    master.checked = qtd === total && total > 0;
     master.indeterminate = qtd > 0 && qtd < total;
   }
 }
@@ -1310,35 +1935,36 @@ function imprimirAcertos() {
   const tb = document.getElementById('tb-acertos');
   const dados = tb._dadosAcertos || [];
   const checks = document.querySelectorAll('.row-check');
-
   const selecionados = [];
+
   checks.forEach((cb, idx) => {
     if (cb.checked && dados[idx]) selecionados.push(dados[idx]);
   });
   if (!selecionados.length) return;
 
-  // Totais
-  const totalGeral  = selecionados.reduce((s,a) => s + numero(getCampo(a,['Total recebido','total']) || 0), 0);
-  const totDinheiro = selecionados.reduce((s,a) => s + numero(getCampo(a,['Dinheiro','dinheiro']) || 0), 0);
-  const totPix      = selecionados.reduce((s,a) => s + numero(getCampo(a,['PIX','Pix','pix']) || 0), 0);
-  const totCredito  = selecionados.reduce((s,a) => s + numero(getCampo(a,['Cartão de crédito','credito']) || 0), 0);
-  const totDebito   = selecionados.reduce((s,a) => s + numero(getCampo(a,['Cartão de débito','debito']) || 0), 0);
-  const totBoleto   = selecionados.reduce((s,a) => s + numero(getCampo(a,['Boleto','boleto']) || 0), 0);
-  const totCarteira = selecionados.reduce((s,a) => s + numero(getCampo(a,['Carteira','carteira']) || 0), 0);
-  const totCheque   = selecionados.reduce((s,a) => s + numero(getCampo(a,['Cheque','cheque']) || 0), 0);
-  const totComp     = selecionados.reduce((s,a) => s + numero(getCampo(a,['Comprovante máquina','comprovante']) || 0), 0);
+  const totalGeral = selecionados.reduce((s, a) => s + numero(getCampo(a, ['Total recebido', 'total', 'totalRecebido']) || 0), 0);
+  const totais = {
+    dinheiro: selecionados.reduce((s, a) => s + numero(getCampo(a, ['Dinheiro', 'dinheiro']) || 0), 0),
+    pix: selecionados.reduce((s, a) => s + numero(getCampo(a, ['PIX', 'Pix', 'pix']) || 0), 0),
+    credito: selecionados.reduce((s, a) => s + numero(getCampo(a, ['Cartão de crédito', 'Cartao de credito', 'credito']) || 0), 0),
+    debito: selecionados.reduce((s, a) => s + numero(getCampo(a, ['Cartão de débito', 'Cartao de debito', 'debito']) || 0), 0),
+    boleto: selecionados.reduce((s, a) => s + numero(getCampo(a, ['Boleto', 'boleto']) || 0), 0),
+    carteira: selecionados.reduce((s, a) => s + numero(getCampo(a, ['Carteira', 'carteira']) || 0), 0),
+    cheque: selecionados.reduce((s, a) => s + numero(getCampo(a, ['Cheque', 'cheque']) || 0), 0),
+    comprovante: selecionados.reduce((s, a) => s + numero(getCampo(a, ['Comprovante máquina', 'Comprovante de máquina', 'comprovante']) || 0), 0)
+  };
 
   const linhas = selecionados.map((a, i) => {
-    const num   = getCampo(a,['Numero da venda','numero']) || '—';
-    const data  = formatarDataBR(normalizarData(getCampo(a,['Data','data'])));
-    const hora  = formatarHora(getCampo(a,['Hora do acerto','hora']));
-    const cli   = getCampo(a,['Cliente','cliente']) || '—';
-    const mot   = getCampo(a,['Motorista','motorista']) || '—';
-    const total = fmtMoeda(getCampo(a,['Total recebido','total']) || 0);
-    const det   = getCampo(a,['Pagamento detalhado']) || getCampo(a,['Forma de pagamento','forma']) || '—';
-    const obs   = getCampo(a,['Observação','obs']) || '—';
+    const num = getCampo(a, ['Numero da venda', 'Número da venda', 'numero']) || '—';
+    const data = formatarDataBR(normalizarData(getCampo(a, ['Data', 'data'])));
+    const hora = formatarHora(getCampo(a, ['Hora do acerto', 'hora']));
+    const cli = getCampo(a, ['Cliente', 'cliente', 'Nome do cliente']) || '—';
+    const mot = getCampo(a, ['Motorista', 'motorista']) || '—';
+    const total = fmtMoeda(getCampo(a, ['Total recebido', 'total', 'totalRecebido']) || 0);
+    const det = getCampo(a, ['Pagamento detalhado', 'Forma de pagamento', 'formaPagamento', 'forma']) || '—';
+    const obs = getCampo(a, ['Observação', 'Observacao', 'obs', 'observacao']) || '—';
     return `<tr>
-      <td style="text-align:center;font-weight:700;background:#f0f0ee">${i+1}</td>
+      <td style="text-align:center;font-weight:700;background:#f0f0ee">${i + 1}</td>
       <td style="font-weight:700">${num}</td>
       <td>${data} ${hora}</td>
       <td>${cli}</td>
@@ -1350,25 +1976,23 @@ function imprimirAcertos() {
   }).join('');
 
   const resumoFormas = [
-    ['Dinheiro',            totDinheiro],
-    ['PIX',                 totPix],
-    ['Cartão Crédito',      totCredito],
-    ['Cartão Débito',       totDebito],
-    ['Boleto',              totBoleto],
-    ['Carteira',            totCarteira],
-    ['Cheque',              totCheque],
-    ['Comprovante Máquina', totComp],
-  ].filter(([,v]) => v > 0)
-   .map(([label, val]) =>
+    ['Dinheiro', totais.dinheiro],
+    ['PIX', totais.pix],
+    ['Cartão Crédito', totais.credito],
+    ['Cartão Débito', totais.debito],
+    ['Boleto', totais.boleto],
+    ['Carteira', totais.carteira],
+    ['Cheque', totais.cheque],
+    ['Comprovante Máquina', totais.comprovante]
+  ].filter(([, valor]) => valor > 0).map(([label, valor]) =>
     `<tr><td style="padding:6px 10px;border-bottom:1px solid #eee">${label}</td>
-         <td style="padding:6px 10px;text-align:right;font-weight:700;border-bottom:1px solid #eee">${fmtMoeda(val)}</td></tr>`
-   ).join('');
+      <td style="padding:6px 10px;text-align:right;font-weight:700;border-bottom:1px solid #eee">${fmtMoeda(valor)}</td></tr>`
+  ).join('');
 
-  const agora      = new Date().toLocaleString('pt-BR');
-  const periodo    = filtroAtual ? formatarDataBR(filtroAtual) : 'Todos os períodos';
-  const motoristas = [...new Set(selecionados.map(a => getCampo(a,['Motorista','motorista'])||'—'))].join(', ');
+  const agora = new Date().toLocaleString('pt-BR');
+  const periodo = filtroAtual ? formatarDataBR(filtroAtual) : 'Todos os períodos';
+  const motoristas = [...new Set(selecionados.map(a => getCampo(a, ['Motorista', 'motorista']) || '—'))].join(', ');
 
-  // Abre nova janela com HTML completo — evita PDF em branco
   const win = window.open('', '_blank', 'width=900,height=700');
   win.document.write(`<!DOCTYPE html>
 <html lang="pt-BR"><head>
@@ -1457,6 +2081,7 @@ function imprimirAcertos() {
 </body></html>`);
   win.document.close();
 }
+
 </script>
 </body>
 </html>
