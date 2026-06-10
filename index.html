@@ -1830,9 +1830,15 @@ function renderBotoesMotorista() {
     </div>`;
     return;
   }
-  container.innerHTML = lista.map(nome =>
-    `<button type="button" class="seller-btn" onclick="selecionarMotorista(${literalJS(nome)}, this)">🚗 ${nome}</button>`
-  ).join('');
+  container.innerHTML = '';
+  lista.forEach(nome => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'seller-btn';
+    btn.textContent = '🚗 ' + nome;
+    btn.addEventListener('click', () => selecionarMotorista(nome, btn));
+    container.appendChild(btn);
+  });
 }
 
 function selecionarMotorista(nome, el) {
@@ -1854,7 +1860,7 @@ function fecharGestaoMotoristas() {
   const atual = document.getElementById('a-motorista').value;
   if (atual) {
     document.querySelectorAll('#motorista-btns .seller-btn').forEach(btn => {
-      if (btn.textContent.trim() === '🚗 ' + atual) btn.classList.add('active');
+      if (btn.textContent.trim().endsWith(atual)) btn.classList.add('active');
     });
   }
 }
