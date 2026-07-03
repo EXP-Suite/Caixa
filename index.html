@@ -536,7 +536,7 @@
           <input type="hidden" id="v-vendedor" value="">
           <div class="seller-options" id="vendedor-opcoes">
             <button type="button" class="seller-btn" onclick="selecionarVendedor('Maria Eduarda', this)">Maria Eduarda</button>
-            <button type="button" class="seller-btn" onclick="selecionarVendedor('Mariana', this)">Mariana</button>
+            <button type="button" class="seller-btn" onclick="selecionarVendedor('Maria Júlia', this)">Maria Júlia</button>
             <button type="button" class="seller-btn" onclick="selecionarVendedor('Lara', this)">Lara</button>
             <button type="button" class="seller-btn" onclick="selecionarVendedor('Outro', this)">Outro</button>
           </div>
@@ -612,7 +612,7 @@
             <select id="filtroVendedor" onchange="alterarFiltroVendedor(this.value)">
               <option value="">Todos</option>
               <option value="Maria Eduarda">Maria Eduarda</option>
-              <option value="Mariana">Mariana</option>
+              <option value="Maria Júlia">Maria Júlia</option>
               <option value="Lara">Lara</option>
               <option value="Outro">Outro</option>
             </select>
@@ -848,6 +848,8 @@ let todosAcertos  = [];
 let filtroAtual   = null;   // null = todos; 'YYYY-MM-DD' = filtra
 let filtroVendedor = '';     // '' = todos; nome = filtra vendedor
 let edicaoAtual = { tipo: '', rowNumber: null };
+let tempRowNumber = -1;
+const syncPendente = new Set();
 
 // ────────────────────────────────────────────────────────────
 //  INIT
@@ -1438,6 +1440,138 @@ function valorPagamento(v, tipo) {
   return numero(valor);
 }
 
+function criarClientRequestId(tipo) {
+  const rand = Math.random().toString(36).slice(2, 10);
+  return `${tipo}-${Date.now()}-${rand}`;
+}
+
+function chaveSync(tipo, payload) {
+  if (payload.acao === 'editar' || payload.acao === 'excluir') {
+    return `${payload.acao}:${tipo}:${payload.rowNumber}`;
+  }
+  return `criar:${tipo}:${payload.clientRequestId}`;
+}
+
+function listaPorTipo(tipo) {
+  if (tipo === 'venda') return todosVendas;
+  if (tipo === 'sangria') return todosSangrias;
+  if (tipo === 'acerto') return todosAcertos;
+  return [];
+}
+
+function setListaPorTipo(tipo, lista) {
+  if (tipo === 'venda') todosVendas = lista;
+  if (tipo === 'sangria') todosSangrias = lista;
+  if (tipo === 'acerto') todosAcertos = lista;
+}
+
+function registroLocal(tipo, payload, rowNumber) {
+  if (tipo === 'venda') {
+    return {
+      _rowNumber: rowNumber,
+      _sync: 'pendente',
+      _clientRequestId: payload.clientRequestId || '',
+      'Numero da venda': payload.numero || '',
+      'Data': payload.data || '',
+      'Total da venda': payload.total || 0,
+      'Dinheiro': payload.valorDinheiro || 0,
+      'PIX': payload.valorPix || 0,
+      'Cartão de crédito': payload.valorCredito || 0,
+      'Cartão de débito': payload.valorDebito || 0,
+      'Boleto': payload.valorBoleto || 0,
+      'Carteira': payload.valorCarteira || 0,
+      'Cheque': payload.valorCheque || 0,
+      'Forma de pagamento': payload.formaPagamento || '',
+      'Pagamento detalhado': payload.pagamentoDetalhado || '',
+      'Nome do cliente': payload.nomeCliente || payload.cliente || '',
+      'Observação': payload.observacao || '',
+      'Notinha': payload.notinha || 'Não',
+      'Vendedor': payload.vendedor || ''
+    };
+  }
+
+  if (tipo === 'sangria') {
+    return {
+      _rowNumber: rowNumber,
+      _sync: 'pendente',
+      _clientRequestId: payload.clientRequestId || '',
+      'Data': payload.data || '',
+      'Hora': payload.hora || '',
+      'Valor retirado': payload.valor || 0,
+      'Motivo da sangria': payload.motivo || '',
+      'Responsável': payload.responsavel || ''
+    };
+  }
+
+  return {
+    _rowNumber: rowNumber,
+    _sync: 'pendente',
+    _clientRequestId: payload.clientRequestId || '',
+    'Numero da venda': payload.numero || '',
+    'Data': payload.data || '',
+    'Hora do acerto': payload.hora || '',
+    'Cliente': payload.cliente || '',
+    'Motorista': payload.motorista || '',
+    'Total recebido': payload.total || 0,
+    'Dinheiro': payload.valorDinheiro || 0,
+    'PIX': payload.valorPix || 0,
+    'Cartão de crédito': payload.valorCredito || 0,
+    'Cartão de débito': payload.valorDebito || 0,
+    'Boleto': payload.valorBoleto || 0,
+    'Carteira': payload.valorCarteira || 0,
+    'Cheque': payload.valorCheque || 0,
+    'Comprovante máquina': payload.valorComprovante || 0,
+    'Forma de pagamento': payload.formaPagamento || '',
+    'Pagamento detalhado': payload.pagamentoDetalhado || '',
+    'Observação': payload.observacao || ''
+  };
+}
+
+function aplicarNaTela(tipo, payload, modoEdicao, rowNumber) {
+  const lista = listaPorTipo(tipo);
+  const local = registroLocal(tipo, payload, modoEdicao ? rowNumber : tempRowNumber--);
+
+  if (modoEdicao) {
+    setListaPorTipo(tipo, lista.map(item => getRowNumber(item) === Number(rowNumber) ? local : item));
+  } else {
+    setListaPorTipo(tipo, [local, ...lista]);
+  }
+
+  renderizar();
+}
+
+function sincronizarEmSegundoPlano(tipo, payload, msgId, sucessoTexto) {
+  const key = chaveSync(tipo, payload);
+  if (syncPendente.has(key)) return false;
+  syncPendente.add(key);
+
+  const enviar = (tentativa = 1) => {
+    fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    })
+      .then(r => r.json())
+      .then(json => {
+        if (!json.ok) throw new Error(json.erro || 'desconhecido');
+        setMsg(msgId, sucessoTexto, 'ok');
+        setTimeout(() => carregarDados(), 600);
+        syncPendente.delete(key);
+      })
+      .catch(err => {
+        if (tentativa < 3) {
+          setTimeout(() => enviar(tentativa + 1), tentativa * 1200);
+          return;
+        }
+        setMsg(msgId, '⚠️ Salvo na tela, mas não sincronizou: ' + err.message, 'err');
+        syncPendente.delete(key);
+      });
+  };
+
+  enviar();
+
+  return true;
+}
+
 // ────────────────────────────────────────────────────────────
 //  SALVAR VENDA
 // ────────────────────────────────────────────────────────────
@@ -1487,49 +1621,37 @@ async function salvarVenda() {
     return;
   }
 
-  setBtnLoading('btn-salvar-venda', 'ico-venda', true);
+  const payload = {
+    tipo: 'venda',
+    acao: modoEdicao ? 'editar' : 'criar',
+    rowNumber: rowNumber,
+    clientRequestId: criarClientRequestId('venda'),
+    numero: parseInt(numero, 10),
+    data: formatarDataPlanilha(data),
+    total: total,
+    cliente: cli,
+    nomeCliente: cli,
+    vendedor: vendedor,
+    observacao: obs,
+    notinha: not,
+    formaPagamento: pagamento.formaPagamento,
+    pagamentoDetalhado: pagamento.pagamentoDetalhado,
+    valorDinheiro: pagamento.valorDinheiro,
+    valorPix: pagamento.valorPix,
+    valorCredito: pagamento.valorCredito,
+    valorDebito: pagamento.valorDebito,
+    valorBoleto: pagamento.valorBoleto,
+    valorCarteira: pagamento.valorCarteira,
+    valorCheque: pagamento.valorCheque
+  };
 
-  try {
-    const r = await fetch(SCRIPT_URL, {
-      method: 'POST',
-      body: JSON.stringify({
-        tipo: 'venda',
-        acao: modoEdicao ? 'editar' : 'criar',
-        rowNumber: rowNumber,
-        numero: parseInt(numero, 10),
-        data: formatarDataPlanilha(data),
-        total: total,
-        cliente: cli,
-        nomeCliente: cli,
-        vendedor: vendedor,
-        observacao: obs,
-        notinha: not,
-        formaPagamento: pagamento.formaPagamento,
-        pagamentoDetalhado: pagamento.pagamentoDetalhado,
-        valorDinheiro: pagamento.valorDinheiro,
-        valorPix: pagamento.valorPix,
-        valorCredito: pagamento.valorCredito,
-        valorDebito: pagamento.valorDebito,
-        valorBoleto: pagamento.valorBoleto,
-        valorCarteira: pagamento.valorCarteira,
-        valorCheque: pagamento.valorCheque
-      })
-    });
-    const json = await r.json();
+  const key = chaveSync('venda', payload);
+  if (syncPendente.has(key)) return;
 
-    if (json.ok) {
-      setMsg('msg-venda', modoEdicao ? `✅ Venda #${numero} atualizada com sucesso!` : `✅ Venda #${json.numero} salva com sucesso!`, 'ok');
-      limparFormVenda();
-      // Pequeno delay para o Sheets confirmar a escrita antes de reler
-      setTimeout(() => carregarDados(), 800);
-    } else {
-      setMsg('msg-venda', '❌ Erro: ' + (json.erro || 'desconhecido'), 'err');
-    }
-  } catch (e) {
-    setMsg('msg-venda', '❌ Falha na conexão. Tente novamente.', 'err');
-  }
-
-  setBtnLoading('btn-salvar-venda', 'ico-venda', false);
+  aplicarNaTela('venda', payload, modoEdicao, rowNumber);
+  limparFormVenda();
+  setMsg('msg-venda', modoEdicao ? '✅ Venda atualizada na tela. Sincronizando...' : '✅ Venda salva na tela. Sincronizando...', 'ok');
+  sincronizarEmSegundoPlano('venda', payload, 'msg-venda', modoEdicao ? `✅ Venda #${numero} sincronizada!` : `✅ Venda #${numero} sincronizada!`);
 }
 
 // ────────────────────────────────────────────────────────────
@@ -1549,36 +1671,25 @@ async function salvarSangria() {
     return;
   }
 
-  setBtnLoading('btn-salvar-sangria', 'ico-sangria', true);
+  const payload = {
+    tipo: 'sangria',
+    acao: modoEdicao ? 'editar' : 'criar',
+    rowNumber: rowNumber,
+    clientRequestId: criarClientRequestId('sangria'),
+    data: formatarDataPlanilha(data),
+    hora: hora || horaAtual(),
+    valor: parseValorBR(valor),
+    motivo: mot || '—',
+    responsavel: resp
+  };
 
-  try {
-    const r = await fetch(SCRIPT_URL, {
-      method: 'POST',
-      body: JSON.stringify({
-        tipo: 'sangria',
-        acao: modoEdicao ? 'editar' : 'criar',
-        rowNumber: rowNumber,
-        data: formatarDataPlanilha(data),
-        hora: hora || horaAtual(),
-        valor: parseValorBR(valor),
-        motivo: mot || '—',
-        responsavel: resp
-      })
-    });
-    const json = await r.json();
+  const key = chaveSync('sangria', payload);
+  if (syncPendente.has(key)) return;
 
-    if (json.ok) {
-      setMsg('msg-sangria', modoEdicao ? '✅ Sangria atualizada com sucesso!' : '✅ Sangria salva com sucesso!', 'ok');
-      limparFormSangria();
-      setTimeout(() => carregarDados(), 800);
-    } else {
-      setMsg('msg-sangria', '❌ Erro: ' + (json.erro || 'desconhecido'), 'err');
-    }
-  } catch (e) {
-    setMsg('msg-sangria', '❌ Falha na conexão. Tente novamente.', 'err');
-  }
-
-  setBtnLoading('btn-salvar-sangria', 'ico-sangria', false);
+  aplicarNaTela('sangria', payload, modoEdicao, rowNumber);
+  limparFormSangria();
+  setMsg('msg-sangria', modoEdicao ? '✅ Sangria atualizada na tela. Sincronizando...' : '✅ Sangria salva na tela. Sincronizando...', 'ok');
+  sincronizarEmSegundoPlano('sangria', payload, 'msg-sangria', modoEdicao ? '✅ Sangria sincronizada!' : '✅ Sangria sincronizada!');
 }
 
 
@@ -1601,48 +1712,37 @@ async function salvarAcerto() {
 
   const pagamento = obterPagamentoAcerto(total);
 
-  setBtnLoading('btn-salvar-acerto', 'ico-acerto', true);
+  const payload = {
+    tipo: 'acerto',
+    acao: modoEdicao ? 'editar' : 'criar',
+    rowNumber: rowNumber,
+    clientRequestId: criarClientRequestId('acerto'),
+    numero: num || '',
+    data: formatarDataPlanilha(data),
+    hora: hora || horaAtual(),
+    cliente: cli || '',
+    motorista: motorista,
+    total: total,
+    observacao: obs,
+    formaPagamento: pagamento.formaPagamento,
+    pagamentoDetalhado: pagamento.pagamentoDetalhado,
+    valorDinheiro: pagamento.valorDinheiro,
+    valorPix: pagamento.valorPix,
+    valorCredito: pagamento.valorCredito,
+    valorDebito: pagamento.valorDebito,
+    valorBoleto: pagamento.valorBoleto,
+    valorCarteira: pagamento.valorCarteira,
+    valorCheque: pagamento.valorCheque,
+    valorComprovante: pagamento.valorComprovante
+  };
 
-  try {
-    const r = await fetch(SCRIPT_URL, {
-      method: 'POST',
-      body: JSON.stringify({
-        tipo: 'acerto',
-        acao: modoEdicao ? 'editar' : 'criar',
-        rowNumber: rowNumber,
-        numero: num || '',
-        data: formatarDataPlanilha(data),
-        hora: hora || horaAtual(),
-        cliente: cli || '',
-        motorista: motorista,
-        total: total,
-        observacao: obs,
-        formaPagamento: pagamento.formaPagamento,
-        pagamentoDetalhado: pagamento.pagamentoDetalhado,
-        valorDinheiro: pagamento.valorDinheiro,
-        valorPix: pagamento.valorPix,
-        valorCredito: pagamento.valorCredito,
-        valorDebito: pagamento.valorDebito,
-        valorBoleto: pagamento.valorBoleto,
-        valorCarteira: pagamento.valorCarteira,
-        valorCheque: pagamento.valorCheque,
-        valorComprovante: pagamento.valorComprovante
-      })
-    });
-    const json = await r.json();
+  const key = chaveSync('acerto', payload);
+  if (syncPendente.has(key)) return;
 
-    if (json.ok) {
-      setMsg('msg-acerto', modoEdicao ? '✅ Acerto atualizado com sucesso!' : '✅ Acerto salvo com sucesso!', 'ok');
-      limparFormAcerto();
-      setTimeout(() => carregarDados(), 800);
-    } else {
-      setMsg('msg-acerto', '❌ Erro: ' + (json.erro || 'desconhecido'), 'err');
-    }
-  } catch (e) {
-    setMsg('msg-acerto', '❌ Falha na conexão. Tente novamente.', 'err');
-  }
-
-  setBtnLoading('btn-salvar-acerto', 'ico-acerto', false);
+  aplicarNaTela('acerto', payload, modoEdicao, rowNumber);
+  limparFormAcerto();
+  setMsg('msg-acerto', modoEdicao ? '✅ Acerto atualizado na tela. Sincronizando...' : '✅ Acerto salvo na tela. Sincronizando...', 'ok');
+  sincronizarEmSegundoPlano('acerto', payload, 'msg-acerto', modoEdicao ? '✅ Acerto sincronizado!' : '✅ Acerto sincronizado!');
 }
 
 // ────────────────────────────────────────────────────────────
